@@ -107,6 +107,11 @@ let mousePosition = {
 
 const projectiles = [];
 
+
+socket.on('updatePlayers', (players) => {
+  console.log(players)
+})
+
 //game loop
 function update() {
   window.requestAnimationFrame(update);

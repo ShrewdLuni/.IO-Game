@@ -1,9 +1,10 @@
 const canvas = document.querySelector("canvas");
 const context = canvas.getContext('2d');
 
+const socket = io();
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-
 
 class Player {
   constructor({ position, velocity }) {

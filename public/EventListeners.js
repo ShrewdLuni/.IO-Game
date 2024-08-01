@@ -1,7 +1,6 @@
 window.addEventListener("keydown", (event) => {
   switch(event.code){
     case "KeyW":
-      console.log(1)
       socket.emit("moveUpdate", true)
       break
     case "Space":
@@ -13,7 +12,6 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("keyup", (event) => {
   switch(event.code){
     case "KeyW":
-      console.log(2);
       socket.emit("moveUpdate", false)
       break
     case "Space":
@@ -24,13 +22,12 @@ window.addEventListener("keyup", (event) => {
 })
 
 window.addEventListener("mousemove", (event) => {
-  mousePosition.x = event.clientX;
-  mousePosition.y = event.clientY;
+  socket.emit("rotationUpdate", {x: event.clientX, y: event.clientY})
 })
 
 window.addEventListener("mousedown", (event) => {
-  actions.move.isActive = true;
+  socket.emit("moveUpdate", true)
 })
 window.addEventListener("mouseup", (event) => {
-  actions.move.isActive = false;
+  socket.emit("moveUpdate", false)
 })

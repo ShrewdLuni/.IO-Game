@@ -37,6 +37,12 @@ io.on("connection", (socket) => {
       players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
     }
   })
+
+  socket.on("rotationUpdate", (updatedPosition : {x: number,y: number}) => {
+    players[socket.id].rotation = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x);
+  })
+
+
 })
 
 setInterval(() => {

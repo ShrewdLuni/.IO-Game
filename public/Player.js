@@ -36,12 +36,6 @@ class Player {
     this.position.y += this.velocity.y;
   }
 
-  rotateTo(targetRotation) {
-    let difference = targetRotation - this.rotation;
-    difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
-    this.rotation += difference * this.rotationSpeed;
-  }
-
   // // shoot() {
   // //   projectiles.push(new Projectile({
   // //     position: {

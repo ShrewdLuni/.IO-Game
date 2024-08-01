@@ -38,6 +38,7 @@ socket.on('updatePlayers', (serverData) => {
     else{
       players[id].position.x = serverPlayer.position.x;
       players[id].position.y = serverPlayer.position.y;
+      players[id].rotation = serverPlayer.rotation;
     }
   }
   for(const id in players){
@@ -54,16 +55,9 @@ function update() {
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
+
   for (const id in players) {
     players[id].render();
-  }
-
-  if(actions.move.isActive) {
-    player.velocity.x = Math.cos(player.rotation) * player.speed;
-    player.velocity.y = Math.sin(player.rotation) * player.speed;
-  } else{
-    player.velocity.x *= .99;
-    player.velocity.y *= .99;
   }
 }
 

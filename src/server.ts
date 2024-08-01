@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 const server = createServer(app);
-const io = new Server(server, {});
+const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
 
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -15,17 +15,33 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-const players: {[id: string]: {x: number, y: number, color?: string,}} = {}
+const players: {[id: string]: {position: {x: number, y: number}, rotation: number, speed: number}} = {}
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {
-    x:100,
-    y:100
-  }
+  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 360 * Math.random(),speed: 5}
 
-  socket.emit('updatePlayers', players)
+  io.emit("updatePlayers", players)
+
+  socket.on("disconnect", (reason) => {
+    console.log(reason)
+    delete players[socket.id]
+    io.emit("updatePlayers", players)
+  })
+
+  socket.on("moveUpdate", (isActive) => {
+    console.log(isActive)
+    if (isActive) {
+      console.log(players[socket.id])
+      players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
+      players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
+    }
+  })
 })
+
+setInterval(() => {
+  io.emit("updatePlayers", players)
+}, 15)
 
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -1,7 +1,8 @@
 window.addEventListener("keydown", (event) => {
   switch(event.code){
     case "KeyW":
-      actions.move.isActive = true;
+      console.log(1)
+      socket.emit("moveUpdate", true)
       break
     case "Space":
       actions.shoot.isActive = true;
@@ -12,7 +13,8 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("keyup", (event) => {
   switch(event.code){
     case "KeyW":
-      actions.move.isActive = false;
+      console.log(2);
+      socket.emit("moveUpdate", false)
       break
     case "Space":
       // actions.shoot.isActive = false;

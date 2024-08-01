@@ -3,12 +3,13 @@ const context = canvas.getContext('2d');
 
 const socket = io();
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const devicePixelRatio = window.devicePixelRatio || 1;
+
+canvas.width = window.innerWidth * devicePixelRatio;
+canvas.height = window.innerHeight * devicePixelRatio;
 
 const player = new Player({
   position: {x: canvas.width / 2, y: canvas.height / 2},
-  velocity: {x: 0, y: 0},
 });
 
 const actions = {
@@ -25,11 +26,25 @@ let mousePosition = {
   y: player.position.y,
 };
 
-const projectiles = [];
 
+const players = {};
 
-socket.on('updatePlayers', (players) => {
-  console.log(players)
+socket.on('updatePlayers', (serverData) => {
+  for(const id in serverData){
+    const serverPlayer = serverData[id]
+    if(!players[id]){
+      players[id] = new Player({position: {x: serverPlayer.position.x, y: serverPlayer.position.y}, rotation: serverPlayer.rotation})
+    }
+    else{
+      players[id].position.x = serverPlayer.position.x;
+      players[id].position.y = serverPlayer.position.y;
+    }
+  }
+  for(const id in players){
+    if(!serverData[id]){
+      delete players[id]
+    }
+  }
 })
 
 //game loop
@@ -39,22 +54,9 @@ function update() {
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  player.move();
-
-  player.rotateTo(Math.atan2(mousePosition.y - player.position.y, mousePosition.x - player.position.x));
-
-  for(let i = projectiles.length - 1; i >= 0; i--){
-    const projectile = projectiles[i]
-    projectile.move();
-
-    if(projectile.position.x + projectile.radius < 0 
-      || projectile.position.x - projectile.radius > canvas.width
-      || projectile.position.y + projectile.radius < 0
-      || projectile.position.y - projectile.radius > canvas.height){
-            projectiles.splice(i, 1);
-    }
+  for (const id in players) {
+    players[id].render();
   }
-
 
   if(actions.move.isActive) {
     player.velocity.x = Math.cos(player.rotation) * player.speed;
@@ -66,3 +68,17 @@ function update() {
 }
 
 update()//start game
+
+// const projectiles = [];
+
+// for(let i = projectiles.length - 1; i >= 0; i--){
+//   const projectile = projectiles[i]
+//   projectile.move();
+
+//   if(projectile.position.x + projectile.radius < 0 
+//     || projectile.position.x - projectile.radius > canvas.width
+//     || projectile.position.y + projectile.radius < 0
+//     || projectile.position.y - projectile.radius > canvas.height){
+//           projectiles.splice(i, 1);
+//   }
+// }

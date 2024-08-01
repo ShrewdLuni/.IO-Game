@@ -6,86 +6,6 @@ const socket = io();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-class Player {
-  constructor({ position, velocity }) {
-    this.position = position;
-    this.velocity = velocity;
-    this.rotation = 0;
-    this.health = 100;
-    this.turbo = 5;
-
-    this.speed = 4;
-    this.rotationSpeed = 0.10;
-    this.maxHealth = 100;
-    this.damage = 1;
-    this.turboLimit = 5;
-  }
-
-  render() {
-    context.save();
-    context.translate(this.position.x, this.position.y);
-    context.rotate(this.rotation)
-    context.translate(-this.position.x, -this.position.y)
-    context.beginPath();
-    context.moveTo(this.position.x + 30, this.position.y);
-    context.lineTo(this.position.x - 10, this.position.y - 10);
-    context.lineTo(this.position.x - 10, this.position.y + 10);
-    context.closePath();
-    
-    context.strokeStyle = "white";
-    context.stroke();
-    context.restore();
-  }
-
-  move() {
-    this.render();
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-  }
-
-  rotateTo(targetRotation) {
-    let difference = targetRotation - this.rotation;
-    difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
-    this.rotation += difference * this.rotationSpeed;
-  }
-
-  shoot(){
-    projectiles.push(new Projectile({
-      position: {
-        x: this.position.x + Math.cos(this.rotation) * 30,
-        y: this.position.y + Math.sin(this.rotation) * 30
-      },
-      velocity: {
-        x: Math.cos(this.rotation),
-        y: Math.sin(this.rotation),
-      }
-    }))
-  }
-}
-
-class Projectile {
-  constructor({position, velocity}) {
-    this.position = position
-    this.velocity = velocity
-    this.radius = 5;
-  }
-
-  render(){
-    context.beginPath();
-    context.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-    context.closePath();
-    context.fillStyle = "white";
-    context.fill();
-  }
-
-  move(){
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-    this.render()
-  }
-}
-
-
 const player = new Player({
   position: {x: canvas.width / 2, y: canvas.height / 2},
   velocity: {x: 0, y: 0},
@@ -144,42 +64,5 @@ function update() {
     player.velocity.y *= .99;
   }
 }
-
-
-window.addEventListener("keydown", (event) => {
-  switch(event.code){
-    case "KeyW":
-      actions.move.isActive = true;
-      break
-    case "Space":
-      actions.shoot.isActive = true;
-      break;
-  }
-})
-
-window.addEventListener("keyup", (event) => {
-  switch(event.code){
-    case "KeyW":
-      actions.move.isActive = false;
-      break
-    case "Space":
-      // actions.shoot.isActive = false;
-      player.shoot();
-      break;
-  }
-})
-
-window.addEventListener("mousemove", (event) => {
-  mousePosition.x = event.clientX;
-  mousePosition.y = event.clientY;
-})
-
-window.addEventListener("mousedown", (event) => {
-  actions.move.isActive = true;
-})
-window.addEventListener("mouseup", (event) => {
-  actions.move.isActive = false;
-})
-
 
 update()//start game

@@ -30,16 +30,15 @@ io.on("connection", (socket) => {
   })
 
   socket.on("moveUpdate", (isActive) => {
-    console.log(isActive)
     if (isActive) {
-      console.log(players[socket.id])
       players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
       players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
     }
   })
 
   socket.on("rotationUpdate", (updatedPosition : {x: number,y: number}) => {
-    players[socket.id].rotation = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x);
+    let dr = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x);
+    players[socket.id].rotation = (dr + Math.PI) % (2 * Math.PI) - Math.PI;
   })
 
 

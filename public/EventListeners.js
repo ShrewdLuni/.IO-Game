@@ -25,9 +25,11 @@ window.addEventListener("mousemove", (event) => {
   socket.emit("rotationUpdate", {x: event.clientX, y: event.clientY})
 })
 
-window.addEventListener("mousedown", (event) => {
-  socket.emit("moveUpdate", true)
-})
-window.addEventListener("mouseup", (event) => {
-  socket.emit("moveUpdate", false)
-})
+
+
+// window.addEventListener("mousedown", (event) => {
+//   socket.emit("moveUpdate", true)
+// })
+// window.addEventListener("mouseup", (event) => {
+//   socket.emit("moveUpdate", false)
+// })

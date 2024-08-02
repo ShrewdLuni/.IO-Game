@@ -39,6 +39,11 @@ socket.on('updatePlayers', (serverData) => {
       players[id].position.x = serverPlayer.position.x;
       players[id].position.y = serverPlayer.position.y;
       players[id].rotation = serverPlayer.rotation;
+
+      let targetRotation = Math.atan2(mousePosition.y - players[id].position.y, mousePosition.x - players[id].position.x)
+      let difference = targetRotation - players[id].rotation;
+      difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
+      players[id].rotation += difference * 0.10;
     }
   }
   for(const id in players){

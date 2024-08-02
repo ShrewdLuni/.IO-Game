@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 const server = createServer(app);
 const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
@@ -19,7 +19,7 @@ const players: {[id: string]: {position: {x: number, y: number}, rotation: numbe
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 360 * Math.random(),speed: 5}
+  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0,speed: 5}
 
   io.emit("updatePlayers", players)
 
@@ -37,8 +37,11 @@ io.on("connection", (socket) => {
   })
 
   socket.on("rotationUpdate", (updatedPosition : {x: number,y: number}) => {
-    let dr = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x);
-    players[socket.id].rotation = (dr + Math.PI) % (2 * Math.PI) - Math.PI;
+    let targetRotation = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x)
+    let difference = targetRotation - players[socket.id].rotation;
+    difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
+
+    players[socket.id].rotation += difference * 0.10
   })
 
 

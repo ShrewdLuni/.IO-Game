@@ -22,6 +22,9 @@ window.addEventListener("keyup", (event) => {
 })
 
 window.addEventListener("mousemove", (event) => {
+  mousePosition.x = event.clientX;
+  mousePosition.y = event.clientY;
+  
   socket.emit("rotationUpdate", {x: event.clientX, y: event.clientY})
 })
 

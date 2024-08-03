@@ -12,7 +12,7 @@ const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+  res.sendFile(path.join(__dirname, "../public/pages/index.html"));
 });
 
 const players: {[id: string]: {position: {x: number, y: number}, rotation: number, targetRotation: number, speed: number}} = {}

@@ -22,15 +22,12 @@ let mousePosition = {
 const players = {};
 
 socket.on('updatePlayers', (serverData) => {
-  console.log("update")
   for(const id in serverData){
     const serverPlayer = serverData[id]
     if(!players[id]){
       players[id] = new Player({position: {x: serverPlayer.position.x, y: serverPlayer.position.y}, rotation: serverPlayer.rotation})
     }
     else{
-      // players[id].position.x = serverPlayer.position.x;
-      // players[id].position.y = serverPlayer.position.y;
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
 
@@ -84,4 +81,3 @@ function update() {
 }
 
 update();
-

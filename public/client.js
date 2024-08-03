@@ -8,24 +8,16 @@ const devicePixelRatio = window.devicePixelRatio || 1;
 canvas.width = window.innerWidth * devicePixelRatio;
 canvas.height = window.innerHeight * devicePixelRatio;
 
-const player = new Player({
-  position: {x: canvas.width / 2, y: canvas.height / 2},
-});
-
 const actions = {
   move: {
     isActive : false
   },
-  shoot: {
-    isActive : false
-  }
 }
 
 let mousePosition = {
-  x: player.position.x,
-  y: player.position.y,
+  x: 0,
+  y: 0,
 };
-
 
 const players = {};
 

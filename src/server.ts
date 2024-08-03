@@ -15,11 +15,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-const players: {[id: string]: {position: {x: number, y: number}, rotation: number, speed: number, isActive: boolean}} = {}
+const players: {[id: string]: {position: {x: number, y: number}, rotation: number, speed: number}} = {}
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0, speed: 5, isActive: false}
+  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0, speed: 5}
 
   io.emit("updatePlayers", players)
 
@@ -37,11 +37,9 @@ io.on("connection", (socket) => {
   })
 
   socket.on("rotationUpdate", (updatedPosition : {x: number,y: number}) => {
-    let targetRotation = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x)
-    let difference = targetRotation - players[socket.id].rotation;
-    difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
-
-    players[socket.id].rotation = targetRotation
+    // let difference = targetRotation - players[socket.id].rotation;
+    // difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
+    players[socket.id].rotation = Math.atan2(updatedPosition.y - players[socket.id].position.y, updatedPosition.x - players[socket.id].position.x)
   })
 })
 

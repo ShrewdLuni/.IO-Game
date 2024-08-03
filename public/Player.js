@@ -24,6 +24,4 @@ class Player {
     context.stroke();
     context.restore();
   }
-
-
 }

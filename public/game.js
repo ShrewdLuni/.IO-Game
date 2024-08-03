@@ -39,11 +39,6 @@ socket.on('updatePlayers', (serverData) => {
       players[id].position.x = serverPlayer.position.x;
       players[id].position.y = serverPlayer.position.y;
       players[id].rotation = serverPlayer.rotation;
-
-      let targetRotation = Math.atan2(mousePosition.y - players[id].position.y, mousePosition.x - players[id].position.x)
-      let difference = targetRotation - players[id].rotation;
-      difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
-      players[id].rotation += difference * 0.10;
     }
   }
   for(const id in players){
@@ -53,31 +48,20 @@ socket.on('updatePlayers', (serverData) => {
   }
 })
 
-//game loop
 function update() {
   window.requestAnimationFrame(update);
 
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-
   for (const id in players) {
     players[id].render();
   }
+
+  if (actions.move.isActive) {
+    socket.emit("moveUpdate", true);
+  }
 }
 
-update()//start game
+update();
 
-// const projectiles = [];
-
-// for(let i = projectiles.length - 1; i >= 0; i--){
-//   const projectile = projectiles[i]
-//   projectile.move();
-
-//   if(projectile.position.x + projectile.radius < 0 
-//     || projectile.position.x - projectile.radius > canvas.width
-//     || projectile.position.y + projectile.radius < 0
-//     || projectile.position.y - projectile.radius > canvas.height){
-//           projectiles.splice(i, 1);
-//   }
-// }

@@ -1,38 +1,21 @@
 window.addEventListener("keydown", (event) => {
   switch(event.code){
     case "KeyW":
-      socket.emit("moveUpdate", true)
-      break
-    case "Space":
-      actions.shoot.isActive = true;
+      actions.move.isActive = true;
       break;
   }
-})
+});
 
 window.addEventListener("keyup", (event) => {
   switch(event.code){
     case "KeyW":
-      socket.emit("moveUpdate", false)
-      break
-    case "Space":
-      // actions.shoot.isActive = false;
-      player.shoot();
+      actions.move.isActive = false;
       break;
   }
-})
+});
 
 window.addEventListener("mousemove", (event) => {
   mousePosition.x = event.clientX;
   mousePosition.y = event.clientY;
-  
-  socket.emit("rotationUpdate", {x: event.clientX, y: event.clientY})
-})
-
-
-
-// window.addEventListener("mousedown", (event) => {
-//   socket.emit("moveUpdate", true)
-// })
-// window.addEventListener("mouseup", (event) => {
-//   socket.emit("moveUpdate", false)
-// })
+  socket.emit("rotationUpdate", {x: event.clientX, y: event.clientY});
+});

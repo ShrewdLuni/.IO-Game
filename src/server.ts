@@ -15,11 +15,11 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-const players: {[id: string]: {position: {x: number, y: number}, rotation: number, speed: number}} = {}
+const players: {[id: string]: {position: {x: number, y: number}, rotation: number, speed: number, isActive: boolean}} = {}
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0,speed: 5}
+  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0, speed: 5, isActive: false}
 
   io.emit("updatePlayers", players)
 
@@ -41,10 +41,8 @@ io.on("connection", (socket) => {
     let difference = targetRotation - players[socket.id].rotation;
     difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
 
-    players[socket.id].rotation += difference * 0.10
+    players[socket.id].rotation = targetRotation
   })
-
-
 })
 
 setInterval(() => {
@@ -53,5 +51,4 @@ setInterval(() => {
 
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-  console.log(__dirname);
-});
+})

@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
 
 setInterval(() => {
   io.emit("updatePlayers", players)
-}, 300)
+}, 15)
 
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

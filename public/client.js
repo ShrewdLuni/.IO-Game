@@ -29,10 +29,17 @@ socket.on('updatePlayers', (serverData) => {
       players[id] = new Player({position: {x: serverPlayer.position.x, y: serverPlayer.position.y}, rotation: serverPlayer.rotation})
     }
     else{
-      players[id].position.x = serverPlayer.position.x;
-      players[id].position.y = serverPlayer.position.y;
+      // players[id].position.x = serverPlayer.position.x;
+      // players[id].position.y = serverPlayer.position.y;
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
+
+      gsap.to(players[id].position, {
+        duration: 0.015,
+        x: serverPlayer.position.x,
+        y: serverPlayer.position.y,
+        ease: "linear"
+      });
     }
   }
   for(const id in players){

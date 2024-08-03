@@ -5,7 +5,7 @@ class Player {
     this.rotation = rotation;
     this.targetRotation = rotation;
 
-    this.speed = 4;
+    this.speed = 5;
     this.rotationSpeed = 0.10;
     this.scale = 2;
   }

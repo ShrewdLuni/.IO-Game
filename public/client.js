@@ -22,6 +22,7 @@ let mousePosition = {
 const players = {};
 
 socket.on('updatePlayers', (serverData) => {
+  console.log("update")
   for(const id in serverData){
     const serverPlayer = serverData[id]
     if(!players[id]){
@@ -31,6 +32,7 @@ socket.on('updatePlayers', (serverData) => {
       players[id].position.x = serverPlayer.position.x;
       players[id].position.y = serverPlayer.position.y;
       players[id].rotation = serverPlayer.rotation;
+      players[id].targetRotation = serverPlayer.targetRotation;
     }
   }
   for(const id in players){
@@ -40,6 +42,29 @@ socket.on('updatePlayers', (serverData) => {
   }
 })
 
+setInterval(() => {
+  let player = players[socket.id];
+
+  if (actions.move.isActive) {
+    player.position.x += Math.cos(player.rotation) * player.speed;
+    player.position.y += Math.sin(player.rotation) * player.speed;
+  }
+
+  player.targetRotation = Math.atan2(mousePosition.y - player.position.y, mousePosition.x - player.position.x);
+  let difference = player.targetRotation - player.rotation;
+  difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
+  if (difference > Math.PI) difference -= 2 * Math.PI;
+  if (difference < -Math.PI) difference += 2 * Math.PI;
+  if(Math.abs(difference) < Math.PI / 6){
+    player.rotation = player.targetRotation;
+  } else{
+    player.rotation += Math.sign(difference) * Math.PI / 6;
+  }
+
+  socket.emit("rotationUpdate", player.rotation);
+  socket.emit("moveUpdate", actions.move.isActive);
+}, 15);
+
 function update() {
   window.requestAnimationFrame(update);
 
@@ -48,10 +73,6 @@ function update() {
 
   for (const id in players) {
     players[id].render();
-  }
-
-  if (actions.move.isActive) {
-    socket.emit("moveUpdate", true);
   }
 }
 

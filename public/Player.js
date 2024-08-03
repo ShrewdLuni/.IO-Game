@@ -3,6 +3,7 @@ class Player {
     this.position = position;
     this.velocity = {x: 0, y: 0};
     this.rotation = rotation;
+    this.targetRotation = rotation;
 
     this.speed = 4;
     this.rotationSpeed = 0.10;

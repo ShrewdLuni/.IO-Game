@@ -3,10 +3,8 @@ const context = canvas.getContext('2d');
 
 const socket = io();
 
-const devicePixelRatio = window.devicePixelRatio || 1;
-
-canvas.width = window.innerWidth * devicePixelRatio;
-canvas.height = window.innerHeight * devicePixelRatio;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 const actions = {
   move: {

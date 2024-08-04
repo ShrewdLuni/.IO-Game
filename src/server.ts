@@ -21,12 +21,9 @@ io.on("connection", (socket) => {
   console.log("user has connected")
   players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0, targetRotation: 0, speed: 5}
 
-  io.emit("updatePlayers", players)
-
   socket.on("disconnect", (reason) => {
     console.log(reason)
     delete players[socket.id]
-    io.emit("updatePlayers", players)
   })
 
   socket.on("moveUpdate", (isActive) => {

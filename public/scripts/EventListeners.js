@@ -3,6 +3,9 @@ window.addEventListener("keydown", (event) => {
     case "KeyW":
       actions.move.isActive = true;
       break;
+    case "Space":
+      actions.shoot.isActive = true;
+      break;
   }
 });
 
@@ -10,6 +13,9 @@ window.addEventListener("keyup", (event) => {
   switch(event.code){
     case "KeyW":
       actions.move.isActive = false;
+      break;
+    case "Space":
+      actions.shoot.isActive = false;
       break;
   }
 });

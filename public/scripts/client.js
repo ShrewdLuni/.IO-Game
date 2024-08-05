@@ -8,8 +8,11 @@ canvas.height = window.innerHeight;
 
 const actions = {
   move: {
-    isActive : false
+    isActive: false
   },
+  shoot: {
+    isActive: false
+  }
 }
 
 let mousePosition = {
@@ -18,8 +21,9 @@ let mousePosition = {
 };
 
 const players = {};
+const projectiles = {}
 
-socket.on('updatePlayers', (serverData) => {
+socket.on("updatePlayers", (serverData) => {
   for(const id in serverData){
     const serverPlayer = serverData[id]
     if(!players[id]){
@@ -44,6 +48,27 @@ socket.on('updatePlayers', (serverData) => {
   }
 })
 
+socket.on("updateProjectiles", (serverData) => {
+  for(const id in serverData){
+    const projectile = serverData[id]
+    if(!projectiles[id]){
+      projectiles[id] = new Projectile({
+        position: projectile.position,
+        velocity: projectile.velocity
+      })
+    }
+    else{
+      projectiles[id].position.x += projectile.velocity.x;
+      projectiles[id].position.y += projectile.velocity.y;
+    }
+  }
+  // for(const id in players){
+  //   if(!serverData[id]){
+  //     delete players[id]
+  //   }
+  // }
+})
+
 setInterval(() => {
   let player = players[socket.id];
 
@@ -63,8 +88,10 @@ setInterval(() => {
     player.rotation += Math.sign(difference) * Math.PI / 6;
   }
 
-  socket.emit("rotationUpdate", player.rotation);
   socket.emit("moveUpdate", actions.move.isActive);
+  socket.emit("projectileUpdate", actions.shoot.isActive);
+  socket.emit("rotationUpdate", player.rotation);
+
 }, 15);
 
 function update() {
@@ -75,6 +102,10 @@ function update() {
 
   for (const id in players) {
     players[id].render();
+  }
+
+  for(const id in projectiles){
+    projectiles[id].render();
   }
 }
 

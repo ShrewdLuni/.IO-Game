@@ -16,6 +16,9 @@ app.get("/", (req, res) => {
 });
 
 const players: {[id: string]: {position: {x: number, y: number}, rotation: number, targetRotation: number, speed: number}} = {}
+const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string}} = {}
+
+let projectileID : number = 0;
 
 io.on("connection", (socket) => {
   console.log("user has connected")
@@ -26,7 +29,7 @@ io.on("connection", (socket) => {
     delete players[socket.id]
   })
 
-  socket.on("moveUpdate", (isActive) => {
+  socket.on("moveUpdate", (isActive : boolean) => {
     if (isActive) {
       players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
       players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
@@ -40,9 +43,35 @@ io.on("connection", (socket) => {
   socket.on("targetRotationUpdate", (targetPosition : {x: number,y: number}) => {
     players[socket.id].targetRotation = Math.atan2(targetPosition.y - players[socket.id].position.y, targetPosition.x - players[socket.id].position.x)
   })
+
+  socket.on("projectileUpdate", (isActive : boolean) => {
+    if (isActive){
+      projectileID++;
+      projectiles[projectileID] = {
+        position: {
+          x: players[socket.id].position.x, 
+          y: players[socket.id].position.y
+        },
+
+        velocity: {
+          x: Math.cos(players[socket.id].rotation) * 20, 
+          y: Math.sin(players[socket.id].rotation) * 20
+        },
+
+        playerID: socket.id
+      }
+    }
+  })
+
 })
 
 setInterval(() => {
+  for (const id in projectiles){
+    projectiles[id].position.x += projectiles[id].velocity.x;
+    projectiles[id].position.y += projectiles[id].velocity.y;
+  }
+
+  io.emit("updateProjectiles", projectiles)
   io.emit("updatePlayers", players)
 }, 15)
 

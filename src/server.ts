@@ -22,7 +22,7 @@ let projectileID : number = 0;
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {position: {x: 200 * Math.random() , y: 200 * Math.random()}, rotation: 0, targetRotation: 0, speed: 5}
+  players[socket.id] = {position: {x: 10 * Math.random() , y: 10 * Math.random()}, rotation: 0, targetRotation: 0, speed: 5}
 
   socket.on("disconnect", (reason) => {
     console.log(reason)

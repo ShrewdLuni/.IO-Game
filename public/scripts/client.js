@@ -6,6 +6,9 @@ const socket = io();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const mapWidth = 10000;
+const mapHeight = 10000;
+
 const actions = {
   move: {
     isActive: false
@@ -109,6 +112,12 @@ function update() {
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
+  const offsetX =  players[socket.id].position.x - canvas.width / 2;
+  const offsetY =  players[socket.id].position.y - canvas.height / 2;
+  
+  context.save();
+  context.translate(-offsetX, -offsetY);
+
   for (const id in players) {
     players[id].render();
   }
@@ -116,6 +125,8 @@ function update() {
   for(const id in projectiles){
     projectiles[id].render();
   }
+
+  context.restore();
 }
 
 update();

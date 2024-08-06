@@ -24,7 +24,7 @@ canvas {
   background: rgba(0, 0, 0, 0.5);
 }
 
-.lowerLeftBlock {
+.info {
   position: absolute;
   margin-bottom: 12px;
   margin-right: 12px;
@@ -36,6 +36,11 @@ canvas {
   font-size: xx-large;
   user-select: none;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.cordinates {
+  text-align: right;
+  font-size: xx-large;
 }
 
 .minimap {

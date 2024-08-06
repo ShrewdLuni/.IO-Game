@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 const players: {[id: string]: {position: {x: number, y: number}, rotation: number, targetRotation: number, speed: number}} = {}
-const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string}} = {}
+const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string, timestamp: number}} = {}
 
 let projectileID : number = 0;
 
@@ -54,11 +54,12 @@ io.on("connection", (socket) => {
         },
 
         velocity: {
-          x: Math.cos(players[socket.id].rotation) * 20, 
-          y: Math.sin(players[socket.id].rotation) * 20
+          x: Math.cos(players[socket.id].rotation) * 10, 
+          y: Math.sin(players[socket.id].rotation) * 10
         },
 
-        playerID: socket.id
+        playerID: socket.id,
+        timestamp: Date.now()
       }
     }
   })
@@ -66,9 +67,13 @@ io.on("connection", (socket) => {
 })
 
 setInterval(() => {
+  const now = Date.now();
   for (const id in projectiles){
     projectiles[id].position.x += projectiles[id].velocity.x;
     projectiles[id].position.y += projectiles[id].velocity.y;
+    if(now - projectiles[id].timestamp > 1500){
+      delete projectiles[id];
+    }
   }
 
   io.emit("updateProjectiles", projectiles)

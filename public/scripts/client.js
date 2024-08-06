@@ -62,11 +62,11 @@ socket.on("updateProjectiles", (serverData) => {
       projectiles[id].position.y += projectile.velocity.y;
     }
   }
-  // for(const id in players){
-  //   if(!serverData[id]){
-  //     delete players[id]
-  //   }
-  // }
+  for(const id in projectiles){
+    if(!serverData[id]){
+      delete projectiles[id]
+    }
+  }
 })
 
 setInterval(() => {

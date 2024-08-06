@@ -41,7 +41,17 @@ canvas {
 .minimap {
   height: 250px;
   width: 250px;
-  background-color: aqua;
+  background-color: white;
+  position: relative;
+  border: 1px solid black;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
 }
 
 .upgrades {

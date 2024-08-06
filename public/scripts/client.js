@@ -6,6 +6,8 @@ const socket = io();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const dot = document.getElementById('dot');
+
 const mapWidth = 10000;
 const mapHeight = 10000;
 
@@ -117,6 +119,9 @@ function update() {
   
   context.save();
   context.translate(-offsetX, -offsetY);
+
+  dot.style.left = `${players[socket.id].position.x / 40}px`;
+  dot.style.top = `${players[socket.id].position.y / 40}px`;
 
   for (const id in players) {
     players[id].render();

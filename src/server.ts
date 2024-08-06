@@ -30,22 +30,24 @@ io.on("connection", (socket) => {
   })
 
   socket.on("moveUpdate", (isActive : boolean) => {
-    if (isActive) {
+    if (isActive && players[socket.id]) {
       players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
       players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
     }
   })
 
   socket.on("rotationUpdate", (rotation) => {
-    players[socket.id].rotation = rotation;
+    if(players[socket.id])
+      players[socket.id].rotation = rotation;
   })
 
   socket.on("targetRotationUpdate", (targetPosition : {x: number,y: number}) => {
-    players[socket.id].targetRotation = Math.atan2(targetPosition.y - players[socket.id].position.y, targetPosition.x - players[socket.id].position.x)
+    if(players[socket.id])
+      players[socket.id].targetRotation = Math.atan2(targetPosition.y - players[socket.id].position.y, targetPosition.x - players[socket.id].position.x)
   })
 
   socket.on("projectileUpdate", (isActive : boolean) => {
-    if (isActive){
+    if (isActive && players[socket.id]){
       projectileID++;
       projectiles[projectileID] = {
         position: {
@@ -71,7 +73,24 @@ setInterval(() => {
   for (const id in projectiles){
     projectiles[id].position.x += projectiles[id].velocity.x;
     projectiles[id].position.y += projectiles[id].velocity.y;
-    if(now - projectiles[id].timestamp > 1500){
+
+    for (const pID in players) {
+      const player = players[pID];
+
+      const distance = Math.hypot(
+        projectiles[id].position.x - player.position.x,
+        projectiles[id].position.y - player.position.y
+      )
+
+      if (distance < 10 && projectiles[id].playerID !== pID){
+        io.to(pID).emit("hitByProjectile");
+        delete projectiles[id];
+        delete players[pID]
+        break
+      }
+    }
+        
+    if(projectiles[id] && now - projectiles[id].timestamp > 1500){
       delete projectiles[id];
     }
   }

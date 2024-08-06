@@ -15,6 +15,8 @@ const actions = {
   }
 }
 
+let isAlive = true;
+
 let mousePosition = {
   x: 0,
   y: 0,
@@ -69,7 +71,15 @@ socket.on("updateProjectiles", (serverData) => {
   }
 })
 
+socket.on("hitByProjectile", () => {
+  isAlive = false;
+  console.log("Died.");
+});
+
 setInterval(() => {
+  if(!isAlive || !players[socket.id])
+    return;
+
   let player = players[socket.id];
 
   if (actions.move.isActive) {
@@ -91,7 +101,6 @@ setInterval(() => {
   socket.emit("moveUpdate", actions.move.isActive);
   socket.emit("projectileUpdate", actions.shoot.isActive);
   socket.emit("rotationUpdate", player.rotation);
-
 }, 15);
 
 function update() {

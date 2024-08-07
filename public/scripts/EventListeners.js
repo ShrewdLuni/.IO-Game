@@ -37,7 +37,7 @@ window.addEventListener("mousemove", (event) => {
 
   mouseMoveTimeout = setTimeout(() => {
     mouseMoved = false;
-  }, 1000);
+  }, 150);
 
   socket.emit("targetRotationUpdate", {x: event.clientX + offsetX, y: event.clientY + offsetY});
 });

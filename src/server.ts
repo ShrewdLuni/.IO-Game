@@ -20,6 +20,8 @@ const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {
 
 let projectileID : number = 0;
 
+const mapSize = 10000;
+
 io.on("connection", (socket) => {
   console.log("user has connected")
   players[socket.id] = {position: {x: 10 * Math.random() , y: 10 * Math.random()}, rotation: 0, targetRotation: 0, speed: 5}
@@ -33,6 +35,18 @@ io.on("connection", (socket) => {
     if (isActive && players[socket.id]) {
       players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
       players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
+      if(players[socket.id].position.x < -10){
+        players[socket.id].position.x = -10
+      }
+      if(players[socket.id].position.x >= mapSize + 10){
+        players[socket.id].position.x = mapSize + 10
+      }
+      if(players[socket.id].position.y < -10){
+        players[socket.id].position.y = -10
+      }
+      if(players[socket.id].position.y >= mapSize + 10){
+        players[socket.id].position.y = mapSize + 10
+      }
     }
   })
 

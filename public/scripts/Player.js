@@ -21,7 +21,11 @@ class Player {
     context.lineTo(this.position.x - 10 * this.scale, this.position.y + 10 * this.scale);
     context.closePath();
 
+    // context.fillStyle = "white";
+    // context.fill();
+
     context.strokeStyle = "white";
+    context.lineWidth = 5;
     context.stroke();
     context.restore();
   }

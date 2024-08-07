@@ -3,9 +3,6 @@ const context = canvas.getContext('2d');
 
 const socket = io();
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
 const dot = document.getElementById('dot');
 const cordinatesTextBox = document.getElementById('cordinates');
 
@@ -119,19 +116,20 @@ function update() {
   window.requestAnimationFrame(update);
 
   context.fillStyle = "black";
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   if(players[socket.id]){
     const offsetX =  players[socket.id].position.x - canvas.width / 2;
     const offsetY =  players[socket.id].position.y - canvas.height / 2;
-    
+
     context.save();
     context.translate(-offsetX, -offsetY);
     cordinatesTextBox.textContent = `x: ${Math.round(players[socket.id].position.x)} y:${Math.round(players[socket.id].position.y)}`
     dot.style.left = `${players[socket.id].position.x / 40}px`;
     dot.style.top = `${players[socket.id].position.y / 40}px`;
   }
-
 
   for (const id in players) {
     players[id].render();

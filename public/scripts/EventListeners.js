@@ -21,14 +21,17 @@ window.addEventListener("keyup", (event) => {
 });
 
 window.addEventListener("mousemove", (event) => {
-  const player = players[socket.id];
-  if (!player)
+  if (!players[socket.id])
     return
+
+  const player = players[socket.id];
 
   const offsetX = player.position.x - canvas.width / 2;
   const offsetY = player.position.y - canvas.height / 2;
+
   mousePosition.x = event.clientX + offsetX;
   mousePosition.y = event.clientY + offsetY;
+  
   mouseMoved = true;
 
   if (mouseMoveTimeout) {

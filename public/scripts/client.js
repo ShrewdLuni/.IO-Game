@@ -82,6 +82,7 @@ socket.on("updateProjectiles", (serverData) => {
 
 socket.on("hitByProjectile", () => {
   isAlive = false;
+  stopGame();
   console.log("Died.");
 });
 

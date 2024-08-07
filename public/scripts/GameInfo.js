@@ -3,13 +3,13 @@ const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shoot
 const upgradesContainer = document.querySelector('.upgrades');
 
 //remove
-const usernameInput = document.getElementById("usernameInput")
-const menu = document.getElementById("menu")
-const gameInformation = document.getElementById("gameInformation")
-const blurElement = document.querySelector(".blur");
-blurElement.classList.add("hidden")
-menu.classList.add("hidden")
-gameInformation.classList.remove("hidden")
+// const usernameInput = document.getElementById("usernameInput")
+// const menu = document.getElementById("menu")
+// const gameInformation = document.getElementById("gameInformation")
+// const blurElement = document.querySelector(".blur");
+// blurElement.classList.add("hidden")
+// menu.classList.add("hidden")
+// gameInformation.classList.remove("hidden")
 //remove
 
 

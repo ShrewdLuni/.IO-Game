@@ -28,13 +28,18 @@ canvas {
   padding: 8px 20px;
   border-radius: 100px;
   border: none;
-  background-image: linear-gradient(
-    to right,
-    rgb(6, 182, 212),
-    rgb(59, 130, 246)
-  );
   color: white;
-  cursor: pointer
+  cursor: pointer;
+
+  width: 100px;
+  height: 57.74px;
+  background-color: #3498db;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+  transition: background-color 0.3s ease;
 }
 
 .blur {
@@ -44,11 +49,6 @@ canvas {
 	bottom: 0px;
 	left: 0px;
 	background-color: rgba(0, 0, 0, 0.8);
-}
-
-.none {
-  text-align: center;
-  border-radius: 30%;
 }
 
 .usernameInput {

@@ -23,6 +23,9 @@ const actions = {
 
 let isAlive = true;
 
+let mouseMoved = false;
+let mouseMoveTimeout;
+
 let mousePosition = {
   x: 0,
   y: 0,
@@ -93,7 +96,9 @@ setInterval(() => {
     player.position.y += Math.sin(player.rotation) * player.speed;
   }
 
-  player.targetRotation = Math.atan2(mousePosition.y - player.position.y, mousePosition.x - player.position.x);
+  if(mouseMoved){
+    player.targetRotation = Math.atan2(mousePosition.y - player.position.y, mousePosition.x - player.position.x);
+  }
   let difference = player.targetRotation - player.rotation;
   difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
   if (difference > Math.PI) difference -= 2 * Math.PI;
@@ -115,14 +120,17 @@ function update() {
   context.fillStyle = "black";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  const offsetX =  players[socket.id].position.x - canvas.width / 2;
-  const offsetY =  players[socket.id].position.y - canvas.height / 2;
-  
-  context.save();
-  context.translate(-offsetX, -offsetY);
-  cordinatesTextBox.textContent = `x: ${Math.round(players[socket.id].position.x)} y:${Math.round(players[socket.id].position.y)}`
-  dot.style.left = `${players[socket.id].position.x / 40}px`;
-  dot.style.top = `${players[socket.id].position.y / 40}px`;
+  if(players[socket.id]){
+    const offsetX =  players[socket.id].position.x - canvas.width / 2;
+    const offsetY =  players[socket.id].position.y - canvas.height / 2;
+    
+    context.save();
+    context.translate(-offsetX, -offsetY);
+    cordinatesTextBox.textContent = `x: ${Math.round(players[socket.id].position.x)} y:${Math.round(players[socket.id].position.y)}`
+    dot.style.left = `${players[socket.id].position.x / 40}px`;
+    dot.style.top = `${players[socket.id].position.y / 40}px`;
+  }
+
 
   for (const id in players) {
     players[id].render();

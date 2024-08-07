@@ -12,6 +12,7 @@ function startGame()
 }
 
 function stopGame() {
+  console.log("Died.");
   blurElement.classList.remove("hidden")
   menu.classList.remove("hidden")
   gameInformation.classList.add("hidden")

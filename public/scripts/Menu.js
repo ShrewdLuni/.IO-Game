@@ -3,8 +3,7 @@ const menu = document.getElementById("menu")
 const gameInformation = document.getElementById("gameInformation")
 const blurElement = document.querySelector(".blur");
 
-function startGame()
-{
+function startGame() {
   console.log(usernameInput.value)
   blurElement.classList.add("hidden")
   menu.classList.add("hidden")

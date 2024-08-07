@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 const app = express();
-const port = 3001;
+const port = 3000;
 
 const server = createServer(app);
 const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 const players: {[id: string]: {position: {x: number, y: number}, rotation: number, targetRotation: number, speed: number}} = {}
 const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string, timestamp: number}} = {}
 
-let projectileID : number = 0;
+let projectileID: number = 0;
 
 const mapSize = 10000;
 
@@ -79,7 +79,6 @@ io.on("connection", (socket) => {
       }
     }
   })
-
 })
 
 setInterval(() => {

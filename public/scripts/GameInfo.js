@@ -1,17 +1,9 @@
+const dot = document.getElementById('dot');
+const cordinatesTextBox = document.getElementById('cordinates');
+
 const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Maneuverability", "Movement Speed" ];
 
 const upgradesContainer = document.querySelector('.upgrades');
-
-//remove
-// const usernameInput = document.getElementById("usernameInput")
-// const menu = document.getElementById("menu")
-// const gameInformation = document.getElementById("gameInformation")
-// const blurElement = document.querySelector(".blur");
-// blurElement.classList.add("hidden")
-// menu.classList.add("hidden")
-// gameInformation.classList.remove("hidden")
-//remove
-
 
 upgrades.map(upgrade => {
   const upgradeDiv = document.createElement('div');
@@ -28,3 +20,9 @@ upgrades.map(upgrade => {
   upgradesContainer.appendChild(upgradeDiv);
   console.log(upgradesContainer)
 });
+
+function updateCordinates(x, y) {
+  cordinatesTextBox.textContent = `x: ${x} y:${y}`
+  dot.style.left = `${x / 40}px`;
+  dot.style.top = `${y / 40}px`;
+}

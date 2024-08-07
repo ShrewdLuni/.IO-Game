@@ -3,9 +3,6 @@ const context = canvas.getContext('2d');
 
 const socket = io();
 
-const dot = document.getElementById('dot');
-const cordinatesTextBox = document.getElementById('cordinates');
-
 const mapWidth = 10000;
 const mapHeight = 10000;
 
@@ -125,9 +122,8 @@ function update() {
 
     context.save();
     context.translate(-offsetX, -offsetY);
-    cordinatesTextBox.textContent = `x: ${Math.round(players[socket.id].position.x)} y:${Math.round(players[socket.id].position.y)}`
-    dot.style.left = `${players[socket.id].position.x / 40}px`;
-    dot.style.top = `${players[socket.id].position.y / 40}px`;
+
+    updateCordinates(Math.round(players[socket.id].position.x), Math.round(players[socket.id].position.y))
   }
 
   for (const id in players) {

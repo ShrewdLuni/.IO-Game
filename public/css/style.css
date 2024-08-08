@@ -119,6 +119,8 @@ canvas {
 }
 
 .upgrades {
+  display: flex;
+  flex-direction: column;
   position: absolute;
   margin-bottom: 12px;
   margin-left: 12px;

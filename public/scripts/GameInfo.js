@@ -1,25 +1,34 @@
 const dot = document.getElementById('dot');
 const cordinatesTextBox = document.getElementById('cordinates');
 
-const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Maneuverability", "Movement Speed" ];
+const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Rotation Speed", "Movement Speed" ];
 
 const upgradesContainer = document.querySelector('.upgrades');
 
 upgrades.map(upgrade => {
-  const upgradeDiv = document.createElement('div');
-  upgradeDiv.textContent = upgrade;
+  const upgradeButton = document.createElement('button');
+  upgradeButton.textContent = upgrade;
 
-  upgradeDiv.setAttribute('style', `
+  upgradeButton.setAttribute('style', `
     padding: 10px;
     margin: 5px;
     font-size: 20px;
     border: 1px solid white;
     background-color: black;
+    color: white;
   `);
 
-  upgradesContainer.appendChild(upgradeDiv);
+  upgradeButton.onclick = function test(){
+    console.log(upgrade)
+  }
+
+  upgradesContainer.appendChild(upgradeButton);
   console.log(upgradesContainer)
 });
+
+function test(name){
+  console.log(name)
+}
 
 function updateCordinates(x, y) {
   cordinatesTextBox.textContent = `x: ${x} y:${y}`

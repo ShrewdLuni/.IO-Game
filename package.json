@@ -14,11 +14,13 @@
   "dependencies": {
     "express": "^4.19.2",
     "game": "file:",
+    "pg": "^8.12.0",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.6",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"

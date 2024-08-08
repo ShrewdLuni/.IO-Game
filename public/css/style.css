@@ -25,21 +25,18 @@ canvas {
 }
 
 #menu button{
-  padding: 8px 20px;
-  border-radius: 100px;
+  padding: 12px;
+  border-radius: 8px;
   border: none;
   color: white;
   cursor: pointer;
 
-  width: 100px;
-  height: 57.74px;
-  background-color: #3498db;
+  width: 200px;
+  background-color: #4169E1;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
-  transition: background-color 0.3s ease;
 }
 
 .blur {
@@ -53,10 +50,19 @@ canvas {
 
 .usernameInput {
   padding: 12px;
-  border-radius: 20px;
-  border: none;
-  background: #475569;
-  color: #cbd5e1;
+  border-radius: 8px;
+  border: solid #001f7b 0px;
+  background: #4169E1;
+  color: white;
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+*:focus {
+  outline: none;
 }
 
 .gameInformation {

@@ -25,10 +25,11 @@ type Stats = {
   speed: number;
 };
 
-
 type CurrentState = {
   health: number;
   lastRegeneration: number;
+  lastShot: number;
+  score: number;
 };
 
 type PlayerData = {
@@ -49,7 +50,7 @@ const mapSize = 10000;
 io.on("connection", (socket) => {
   console.log("user has connected")
   players[socket.id] = {
-    position: { x: 10 * Math.random(), y: 10 * Math.random() },
+    position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
     rotation: 0,
     targetRotation: 0,
     stats: {
@@ -57,13 +58,15 @@ io.on("connection", (socket) => {
       maxHealth: 100,
       bulletSpeed: 20,
       damage: 5,
-      shootingSpeed: 5,
+      shootingSpeed: 10,
       rotationSpeed: Math.PI / 18,
       speed: 10,
     },
     currentState: {
       health: 1,
       lastRegeneration: 0,
+      lastShot: 0,
+      score: 0,
     }
   };
 
@@ -102,8 +105,12 @@ io.on("connection", (socket) => {
   })
 
   socket.on("projectileUpdate", (isActive : boolean) => {
-    if (isActive && players[socket.id]){
+    const now = Date.now()
+
+    if (isActive && players[socket.id] && now - players[socket.id].currentState.lastShot >= 1000 / players[socket.id].stats.shootingSpeed){
+      
       projectileID++;
+      
       projectiles[projectileID] = {
         position: {
           x: players[socket.id].position.x, 
@@ -116,8 +123,10 @@ io.on("connection", (socket) => {
         },
 
         playerID: socket.id,
-        timestamp: Date.now()
+        timestamp: now
       }
+
+      players[socket.id].currentState.lastShot = now;
     }
   })
 
@@ -128,8 +137,15 @@ io.on("connection", (socket) => {
 })
 
 setInterval(() => {
-  const now = Date.now();
+  updateProjectiles();
+  updateHealth();
 
+  io.emit("updateProjectiles", projectiles)
+  io.emit("updatePlayers", players)
+}, 15)
+
+function updateProjectiles(){
+  const now = Date.now();
   for (const id in projectiles){
     projectiles[id].position.x += projectiles[id].velocity.x;
     projectiles[id].position.y += projectiles[id].velocity.y;
@@ -161,7 +177,10 @@ setInterval(() => {
       delete projectiles[id];
     }
   }
+}
 
+function updateHealth(){
+  const now = Date.now();
   for (const pID in players) {
     const player = players[pID];
 
@@ -177,10 +196,7 @@ setInterval(() => {
       player.currentState.lastRegeneration = now;
     }
   }
-
-  io.emit("updateProjectiles", projectiles)
-  io.emit("updatePlayers", players)
-}, 15)
+}
 
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

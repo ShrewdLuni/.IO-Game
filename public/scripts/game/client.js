@@ -15,6 +15,8 @@ const actions = {
   }
 }
 
+let lastUpdate = 0;
+
 let isAlive = true;
 
 let mouseMoved = false;
@@ -32,14 +34,14 @@ socket.on("updatePlayers", (serverData) => {
   for(const id in serverData){
     const serverPlayer = serverData[id]
     if(!players[id]){
-      players[id] = new Player({position: {x: serverPlayer.position.x, y: serverPlayer.position.y}, rotation: serverPlayer.rotation})
+      players[id] = new Player({position: {x: serverPlayer.position.x, y: serverPlayer.position.y}, rotation: serverPlayer.rotation, stats: serverPlayer.stats, currentState: serverPlayer.currentState})
     }
     else{
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
 
       players[id].stats = serverPlayer.stats;
-      players[id].currentState = serverData.currentState;
+      players[id].currentState = serverPlayer.currentState;
 
       gsap.to(players[id].position, {
         duration: 0.015,
@@ -53,6 +55,12 @@ socket.on("updatePlayers", (serverData) => {
     if(!serverData[id]){
       delete players[id]
     }
+  }
+
+  const now = Date.now();
+  if (now - lastUpdate >= 2000) {
+    updateLeaderboard(players)
+    lastUpdate = now;
   }
 })
 

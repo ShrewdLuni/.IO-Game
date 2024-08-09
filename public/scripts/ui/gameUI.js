@@ -25,6 +25,17 @@ upgrades.map(upgrade => {
   upgradesContainer.appendChild(upgradeButton);
 });
 
+
+function updateLeaderboard(players){
+  leaderboard.innerHTML = "";
+  Object.values(players).forEach(player => {
+    const score = document.createElement("div");
+    score.textContent = "username" + " " + player.currentState.score;
+  
+    leaderboard.appendChild(score);
+  });
+}
+
 function updateCordinates(x, y) {
   cordinatesTextBox.textContent = `x: ${x} y:${y}`
   dot.style.left = `${x / 40}px`;

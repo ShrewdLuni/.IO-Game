@@ -1,19 +1,10 @@
 class Player {
 
-  constructor({ position, rotation = 0 }) {
+  constructor({ position, rotation, stats }) {
     this.position = position;
-    this.velocity = {x: 0, y: 0};
     this.rotation = rotation;
     this.targetRotation = rotation;
-
-    this.regeneration = 1;
-    this.maxHealth = 10;
-    this.bulletSpeed = 5;
-    this.damage = 1;
-    this.shootingSpeed = 1;
-    this.rotationSpeed = 0.10;
-    this.speed = 5;
-
+    this.stats = stats
     this.scale = 2;
   }
 

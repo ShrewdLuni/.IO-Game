@@ -37,6 +37,8 @@ socket.on("updatePlayers", (serverData) => {
     else{
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
+      
+      players[id].stats = serverPlayer.stats;
 
       gsap.to(players[id].position, {
         duration: 0.015,
@@ -86,8 +88,8 @@ setInterval(() => {
   let player = players[socket.id];
 
   if (actions.move.isActive) {
-    player.position.x += Math.cos(player.rotation) * player.speed;
-    player.position.y += Math.sin(player.rotation) * player.speed;
+    player.position.x += Math.cos(player.rotation) * player.stats.speed;
+    player.position.y += Math.sin(player.rotation) * player.stats.speed;
   }
 
   if(mouseMoved){

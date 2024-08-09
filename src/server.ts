@@ -15,7 +15,24 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/index.html"));
 });
 
-const players: {[id: string]: {position: {x: number, y: number}, rotation: number, targetRotation: number, speed: number}} = {}
+type Stats = {
+  regeneration: number;
+  maxHealth: number;
+  bulletSpeed: number;
+  damage: number;
+  shootingSpeed: number;
+  rotationSpeed: number;
+  speed: number;
+};
+
+type PlayerData = {
+  position: { x: number; y: number };
+  rotation: number;
+  targetRotation: number;
+  stats: Stats;
+};
+
+const players: { [id: string]: PlayerData } = {}
 const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string, timestamp: number}} = {}
 
 let projectileID: number = 0;
@@ -24,7 +41,20 @@ const mapSize = 10000;
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {position: {x: 10 * Math.random() , y: 10 * Math.random()}, rotation: 0, targetRotation: 0, speed: 5}
+  players[socket.id] = {
+    position: { x: 10 * Math.random(), y: 10 * Math.random() },
+    rotation: 0,
+    targetRotation: 0,
+    stats: {
+      regeneration: 1,
+      maxHealth: 10,
+      bulletSpeed: 5,
+      damage: 1,
+      shootingSpeed: 1,
+      rotationSpeed: Math.PI / 6,
+      speed: 5,
+    },
+  };
 
   socket.on("disconnect", (reason) => {
     console.log(reason)
@@ -33,8 +63,8 @@ io.on("connection", (socket) => {
 
   socket.on("moveUpdate", (isActive : boolean) => {
     if (isActive && players[socket.id]) {
-      players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].speed;
-      players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].speed;
+      players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].stats.speed;
+      players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].stats.speed;
       if(players[socket.id].position.x < -10){
         players[socket.id].position.x = -10
       }

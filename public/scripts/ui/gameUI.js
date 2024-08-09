@@ -1,15 +1,15 @@
-const dot = document.getElementById('dot');
-const cordinatesTextBox = document.getElementById('cordinates');
+const dot = document.getElementById("dot");
+const cordinatesTextBox = document.getElementById("cordinates");
 
 const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Rotation Speed", "Movement Speed" ];
 
-const upgradesContainer = document.querySelector('.upgrades');
+const upgradesContainer = document.querySelector(".upgrades");
 
 upgrades.map(upgrade => {
-  const upgradeButton = document.createElement('button');
+  const upgradeButton = document.createElement("button");
   upgradeButton.textContent = upgrade;
 
-  upgradeButton.setAttribute('style', `
+  upgradeButton.setAttribute("style", `
     padding: 10px;
     margin: 5px;
     font-size: 20px;
@@ -18,17 +18,12 @@ upgrades.map(upgrade => {
     color: white;
   `);
 
-  upgradeButton.onclick = function test(){
+  upgradeButton.onclick = function click(){
     console.log(upgrade)
   }
 
   upgradesContainer.appendChild(upgradeButton);
-  console.log(upgradesContainer)
 });
-
-function test(name){
-  console.log(name)
-}
 
 function updateCordinates(x, y) {
   cordinatesTextBox.textContent = `x: ${x} y:${y}`

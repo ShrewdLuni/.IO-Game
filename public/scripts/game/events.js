@@ -24,16 +24,11 @@ window.addEventListener("mousemove", (event) => {
   if (!players[socket.id])
     return
 
-  const player = players[socket.id];
-
-  const offsetX = player.position.x - canvas.width / 2;
-  const offsetY = player.position.y - canvas.height / 2;
-
-  mousePosition.x = event.clientX + offsetX;
-  mousePosition.y = event.clientY + offsetY;
+  mousePosition.x = event.clientX + players[socket.id].position.x - canvas.width / 2;
+  mousePosition.y = event.clientY + players[socket.id].position.y - canvas.height / 2;
   
   mouseMoved = true;
-
+  
   if (mouseMoveTimeout) {
     clearTimeout(mouseMoveTimeout);
   }
@@ -42,5 +37,5 @@ window.addEventListener("mousemove", (event) => {
     mouseMoved = false;
   }, 150);
 
-  socket.emit("targetRotationUpdate", {x: event.clientX + offsetX, y: event.clientY + offsetY});
+  socket.emit("targetRotationUpdate", {x: mousePosition.x, y: mousePosition.y});
 });

@@ -19,7 +19,7 @@ upgrades.map(upgrade => {
   `);
 
   upgradeButton.onclick = function click(){
-    console.log(upgrade)
+    socket.emit("statsUpgrade", upgrade);
   }
 
   upgradesContainer.appendChild(upgradeButton);

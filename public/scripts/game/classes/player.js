@@ -1,9 +1,10 @@
 class Player {
-  constructor({ position, rotation, stats }) {
+  constructor({ position, rotation, stats, currentState }) {
     this.position = position;
     this.rotation = rotation;
     this.targetRotation = rotation;
-    this.stats = stats
+    this.stats = stats;
+    this.currentState = currentState;
     this.scale = 2;
   }
 

@@ -39,6 +39,7 @@ socket.on("updatePlayers", (serverData) => {
       players[id].targetRotation = serverPlayer.targetRotation;
 
       players[id].stats = serverPlayer.stats;
+      players[id].currentState = serverData.currentState;
 
       gsap.to(players[id].position, {
         duration: 0.015,

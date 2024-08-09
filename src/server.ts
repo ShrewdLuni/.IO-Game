@@ -25,11 +25,18 @@ type Stats = {
   speed: number;
 };
 
+
+type CurrentState = {
+  health: number;
+  lastRegeneration: number;
+};
+
 type PlayerData = {
   position: { x: number; y: number };
   rotation: number;
   targetRotation: number;
   stats: Stats;
+  currentState: CurrentState;
 };
 
 const players: { [id: string]: PlayerData } = {}
@@ -46,14 +53,18 @@ io.on("connection", (socket) => {
     rotation: 0,
     targetRotation: 0,
     stats: {
-      regeneration: 1,
-      maxHealth: 10,
+      regeneration: 15,
+      maxHealth: 100,
       bulletSpeed: 20,
-      damage: 1,
-      shootingSpeed: 1,
+      damage: 5,
+      shootingSpeed: 5,
       rotationSpeed: Math.PI / 18,
       speed: 10,
     },
+    currentState: {
+      health: 1,
+      lastRegeneration: 0,
+    }
   };
 
   socket.on("disconnect", (reason) => {
@@ -109,10 +120,16 @@ io.on("connection", (socket) => {
       }
     }
   })
+
+
+  socket.on("statsUpgrade", (info) => {
+    console.log(info)
+  })
 })
 
 setInterval(() => {
   const now = Date.now();
+
   for (const id in projectiles){
     projectiles[id].position.x += projectiles[id].velocity.x;
     projectiles[id].position.y += projectiles[id].velocity.y;
@@ -126,15 +143,38 @@ setInterval(() => {
       )
 
       if (distance < 10 && projectiles[id].playerID !== pID){
-        io.to(pID).emit("hitByProjectile");
-        delete projectiles[id];
-        delete players[pID]
+
+        players[pID].currentState.health -= players[projectiles[id].playerID].stats.damage;
+        if(players[pID].currentState.health <= 0){
+          io.to(pID).emit("hitByProjectile");
+          delete projectiles[id];
+          delete players[pID]
+          console.log("died");
+        } else {
+          console.log(players[pID].currentState.health)
+        }
         break
       }
     }
         
     if(projectiles[id] && now - projectiles[id].timestamp > 1500){
       delete projectiles[id];
+    }
+  }
+
+  for (const pID in players) {
+    const player = players[pID];
+
+    if (!player.currentState.lastRegeneration) {
+      player.currentState.lastRegeneration = now;
+    }
+
+    if (now - player.currentState.lastRegeneration >= 1000) {
+      player.currentState.health = Math.min(
+        player.stats.maxHealth,
+        player.currentState.health + player.stats.regeneration
+      );
+      player.currentState.lastRegeneration = now;
     }
   }
 

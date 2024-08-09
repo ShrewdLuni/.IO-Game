@@ -37,7 +37,7 @@ socket.on("updatePlayers", (serverData) => {
     else{
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
-      
+
       players[id].stats = serverPlayer.stats;
 
       gsap.to(players[id].position, {
@@ -99,10 +99,10 @@ setInterval(() => {
   difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
   if (difference > Math.PI) difference -= 2 * Math.PI;
   if (difference < -Math.PI) difference += 2 * Math.PI;
-  if(Math.abs(difference) < Math.PI / 6){
+  if(Math.abs(difference) < player.stats.rotationSpeed){
     player.rotation = player.targetRotation;
   } else{
-    player.rotation += Math.sign(difference) * Math.PI / 6;
+    player.rotation += Math.sign(difference) *  player.stats.rotationSpeed;
   }
 
   socket.emit("moveUpdate", actions.move.isActive);

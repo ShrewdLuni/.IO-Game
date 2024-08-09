@@ -48,11 +48,11 @@ io.on("connection", (socket) => {
     stats: {
       regeneration: 1,
       maxHealth: 10,
-      bulletSpeed: 5,
+      bulletSpeed: 20,
       damage: 1,
       shootingSpeed: 1,
-      rotationSpeed: Math.PI / 6,
-      speed: 5,
+      rotationSpeed: Math.PI / 18,
+      speed: 10,
     },
   };
 
@@ -100,8 +100,8 @@ io.on("connection", (socket) => {
         },
 
         velocity: {
-          x: Math.cos(players[socket.id].rotation) * 10, 
-          y: Math.sin(players[socket.id].rotation) * 10
+          x: Math.cos(players[socket.id].rotation) * players[socket.id].stats.bulletSpeed, 
+          y: Math.sin(players[socket.id].rotation) * players[socket.id].stats.bulletSpeed
         },
 
         playerID: socket.id,

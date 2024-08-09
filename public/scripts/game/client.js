@@ -100,12 +100,12 @@ setInterval(() => {
   difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
   if (difference > Math.PI) difference -= 2 * Math.PI;
   if (difference < -Math.PI) difference += 2 * Math.PI;
-  if(Math.abs(difference) < player.stats.rotationSpeed){
+
+  if(Math.abs(difference) < Math.PI / player.stats.rotationSpeed){
     player.rotation = player.targetRotation;
   } else{
-    player.rotation += Math.sign(difference) *  player.stats.rotationSpeed;
+    player.rotation += Math.sign(difference) *  Math.PI / player.stats.rotationSpeed;
   }
-
   socket.emit("moveUpdate", actions.move.isActive);
   socket.emit("projectileUpdate", actions.shoot.isActive);
   socket.emit("rotationUpdate", player.rotation);

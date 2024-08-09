@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
       bulletSpeed: 20,
       damage: 5,
       shootingSpeed: 10,
-      rotationSpeed: Math.PI / 18,
+      rotationSpeed: 72,
       speed: 10,
     },
     currentState: {
@@ -131,8 +131,32 @@ io.on("connection", (socket) => {
   })
 
 
-  socket.on("statsUpgrade", (info) => {
-    console.log(info)
+  socket.on("statsUpgrade", (upgradedStat) => {
+    switch (upgradedStat) {
+      case "Regeneration":
+        players[socket.id].stats.regeneration += 1;
+        break;
+      case "Max Health":
+        players[socket.id].stats.maxHealth += 5;
+        break;
+      case "Bullet Speed":
+        players[socket.id].stats.bulletSpeed += 5;
+        break;
+      case "Damage":
+        players[socket.id].stats.damage += 1;
+        break;
+      case "Shooting Speed":
+        players[socket.id].stats.shootingSpeed += 1;
+        break;
+      case "Rotation Speed":
+        players[socket.id].stats.rotationSpeed -= 2;
+        break;
+      case "Movement Speed":
+        players[socket.id].stats.speed += 5;
+      default:
+        console.log("Invalid upgrade");
+        break;
+    }
   })
 })
 

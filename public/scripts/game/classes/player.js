@@ -24,7 +24,7 @@ class Player {
     context.fillStyle = "black";
     context.fill();
     context.restore();
-
+    //Username
     context.save();
     context.font = "600 20px Arial";
     context.fillStyle = "white";
@@ -33,14 +33,34 @@ class Player {
     let facingTop = false;
     context.fillText("username", this.position.x, this.position.y + (facingTop ? -offset : offset));
     context.restore();
-
+    //Health Indicator
     context.save();
     context.beginPath();
     context.arc(this.position.x , this.position.y , 5 * this.scale, 0, 2 * Math.PI);
-    context.strokeStyle = "white";
+    context.strokeStyle = "black";
     context.lineWidth = 4;
     context.stroke();
-    context.fillStyle = "green";
+
+
+
+    const getHealthColor = () => {
+      let healthPercentage = this.currentState.health / this.stats.maxHealth;
+      if (healthPercentage > 0.5) {
+        let ratio = (healthPercentage - 0.5) * 2;
+        const r = Math.floor(255 * (1 - ratio));
+        const g = 255;
+        const b = 0;
+        return `rgb(${r}, ${g}, ${b})`;
+      } else {
+        let ratio = healthPercentage * 2;
+        const r = 255;
+        const g = Math.floor(165 * ratio);
+        const b = 0;
+        return `rgb(${r}, ${g}, ${b})`;
+      }
+    };
+
+    context.fillStyle = getHealthColor()
     context.fill();
     context.restore(); 
   }

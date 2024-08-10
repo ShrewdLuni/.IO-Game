@@ -182,7 +182,7 @@ function updateProjectiles(){
         projectiles[id].position.y - player.position.y
       )
 
-      if (distance < 10 && projectiles[id].playerID !== pID){
+      if (distance < 30 && projectiles[id].playerID !== pID){
 
         players[pID].currentState.health -= players[projectiles[id].playerID].stats.damage;
         if(players[pID].currentState.health <= 0){

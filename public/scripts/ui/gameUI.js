@@ -3,27 +3,27 @@ const cordinatesTextBox = document.getElementById("cordinates");
 const upgradesContainer = document.querySelector(".upgrades");
 const scoreContainer = document.getElementById("scoreContainer");
 
-const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Rotation Speed", "Movement Speed" ];
+// const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Rotation Speed", "Movement Speed" ];
 
-upgrades.map(upgrade => {
-  const upgradeButton = document.createElement("button");
-  upgradeButton.textContent = upgrade;
+// upgrades.map(upgrade => {
+//   const upgradeButton = document.createElement("button");
+//   upgradeButton.textContent = upgrade;
 
-  upgradeButton.setAttribute("style", `
-    padding: 10px;
-    margin: 5px;
-    font-size: 20px;
-    border: 1px solid white;
-    background-color: black;
-    color: white;
-  `);
+//   upgradeButton.setAttribute("style", `
+//     padding: 10px;
+//     margin: 5px;
+//     font-size: 20px;
+//     border: 1px solid white;
+//     background-color: black;
+//     color: white;
+//   `);
 
-  upgradeButton.onclick = function click(){
-    socket.emit("statsUpgrade", upgrade);
-  }
+//   upgradeButton.onclick = function click(){
+//     socket.emit("statsUpgrade", upgrade);
+//   }
 
-  upgradesContainer.appendChild(upgradeButton);
-});
+//   upgradesContainer.appendChild(upgradeButton);
+// });
 
 function updateLeaderboard(players){
   scoreContainer.innerHTML = "";

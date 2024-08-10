@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  background-color: black;
+}
+
+.time {
+  display: flex;
+  flex-direction: row;
+}
+
+p {
+  color: white;
+  font-weight: 500;
+}
+
+p.active {
+  font-weight: bold;
+  
+}

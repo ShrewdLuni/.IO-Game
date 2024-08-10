@@ -15,6 +15,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/index.html"));
 });
 
+app.get("/leaderboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/pages/leaderboard.html"));
+});
+
 type Stats = {
   regeneration: number;
   maxHealth: number;

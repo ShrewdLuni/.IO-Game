@@ -36,6 +36,7 @@ type PlayerData = {
   position: { x: number; y: number };
   rotation: number;
   targetRotation: number;
+  username: string;
   stats: Stats;
   currentState: CurrentState;
 };
@@ -49,30 +50,34 @@ const mapSize = 10000;
 
 io.on("connection", (socket) => {
   console.log("user has connected")
-  players[socket.id] = {
-    position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
-    rotation: 0,
-    targetRotation: 0,
-    stats: {
-      regeneration: 15,
-      maxHealth: 100,
-      bulletSpeed: 20,
-      damage: 5,
-      shootingSpeed: 10,
-      rotationSpeed: 72,
-      speed: 10,
-    },
-    currentState: {
-      health: 1,
-      lastRegeneration: 0,
-      lastShot: 0,
-      score: 0,
-    }
-  };
 
   socket.on("disconnect", (reason) => {
     console.log(reason)
     delete players[socket.id]
+  })
+
+  socket.on("startGame", (username) => {
+    players[socket.id] = {
+      position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
+      rotation: 0,
+      targetRotation: 0,
+      username: username,
+      stats: {
+        regeneration: 15,
+        maxHealth: 100,
+        bulletSpeed: 20,
+        damage: 5,
+        shootingSpeed: 10,
+        rotationSpeed: 72,
+        speed: 10,
+      },
+      currentState: {
+        health: 1,
+        lastRegeneration: 0,
+        lastShot: 0,
+        score: 0,
+      }
+    };
   })
 
   socket.on("moveUpdate", (isActive : boolean) => {
@@ -186,10 +191,10 @@ function updateProjectiles(){
 
         players[pID].currentState.health -= players[projectiles[id].playerID].stats.damage;
         if(players[pID].currentState.health <= 0){
+          players[projectiles[id].playerID].currentState.score += 100;
           io.to(pID).emit("hitByProjectile");
           delete projectiles[id];
           delete players[pID]
-          console.log("died");
         } else {
           console.log(players[pID].currentState.health)
         }

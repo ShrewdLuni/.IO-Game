@@ -39,7 +39,8 @@ socket.on("updatePlayers", (serverData) => {
     else{
       players[id].rotation = serverPlayer.rotation;
       players[id].targetRotation = serverPlayer.targetRotation;
-
+      players[id].username = serverPlayer.username;
+      
       players[id].stats = serverPlayer.stats;
       players[id].currentState = serverPlayer.currentState;
 
@@ -58,7 +59,7 @@ socket.on("updatePlayers", (serverData) => {
   }
 
   const now = Date.now();
-  if (now - lastUpdate >= 2000) {
+  if (now - lastUpdate >= 1000) {
     updateLeaderboard(players)
     lastUpdate = now;
   }
@@ -86,7 +87,6 @@ socket.on("updateProjectiles", (serverData) => {
 })
 
 socket.on("hitByProjectile", () => {
-  isAlive = false;
   stopGame();
 });
 

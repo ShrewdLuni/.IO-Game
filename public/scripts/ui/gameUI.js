@@ -1,9 +1,9 @@
 const dot = document.getElementById("dot");
 const cordinatesTextBox = document.getElementById("cordinates");
+const upgradesContainer = document.querySelector(".upgrades");
+const scoreContainer = document.getElementById("scoreContainer");
 
 const upgrades = ["Regeneration", "Max Health", "Bullet Speed", "Damage", "Shooting Speed", "Rotation Speed", "Movement Speed" ];
-
-const upgradesContainer = document.querySelector(".upgrades");
 
 upgrades.map(upgrade => {
   const upgradeButton = document.createElement("button");
@@ -25,14 +25,13 @@ upgrades.map(upgrade => {
   upgradesContainer.appendChild(upgradeButton);
 });
 
-
 function updateLeaderboard(players){
-  leaderboard.innerHTML = "";
+  scoreContainer.innerHTML = "";
   Object.values(players).forEach(player => {
     const score = document.createElement("div");
-    score.textContent = "username" + " " + player.currentState.score;
+    score.textContent = player.username + " " + player.currentState.score;
   
-    leaderboard.appendChild(score);
+    scoreContainer.appendChild(score);
   });
 }
 

@@ -1,8 +1,9 @@
 class Player {
-  constructor({ position, rotation, stats, currentState }) {
+  constructor({ position, rotation, username, stats, currentState}) {
     this.position = position;
     this.rotation = rotation;
     this.targetRotation = rotation;
+    this.username = username;
     this.stats = stats;
     this.currentState = currentState;
     this.scale = 2;
@@ -31,7 +32,7 @@ class Player {
     context.textAlign = "center";
     let offset = (30 * this.scale);
     let facingTop = false;
-    context.fillText("username", this.position.x, this.position.y + (facingTop ? -offset : offset));
+    context.fillText(this.username, this.position.x, this.position.y + (facingTop ? -offset : offset));
     context.restore();
     //Health Indicator
     context.save();

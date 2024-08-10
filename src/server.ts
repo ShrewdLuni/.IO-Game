@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -18,6 +19,15 @@ app.get("/", (req, res) => {
 app.get("/leaderboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/leaderboard.html"));
 });
+
+app.get("/profile/:username", (req, res) => {
+  const username = req.params.username;
+  const filePath = path.join(__dirname, "../public/pages", "profile.html");
+  let template = fs.readFileSync(filePath, "utf-8");
+  res.send(template.replace(/{{name}}/g, username));
+});
+
+
 
 type Stats = {
   regeneration: number;

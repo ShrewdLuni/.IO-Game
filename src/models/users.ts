@@ -15,12 +15,20 @@ export const getUserBySessionToken = async (sessionToken: string) => {
   return result.rows;
 }
 
-export const getUserById = async (id: number) => {
+export const getUserById = async (id: string) => {
   const result = await pool.query("SELECT * FROM users WHERE id = $1", [id])
   return result.rows;
 }
 
-export const creatUser = async (username: string, email: string, password: string, salt: string, sessionToken: string) => {
+export const creatUser = async (values: Record<string, any>) => {
+  const {
+    username,
+    email,
+    password,
+    salt = null,
+    sessionToken = null, 
+  } = values
+
   const result = await pool.query(
     "INSERT INTO users (username, email, authentication) VALUES ($1, $2, ROW($3, $4, $5)::authentication_type) RETURNING *",
     [username, email, password, salt, sessionToken]
@@ -28,11 +36,19 @@ export const creatUser = async (username: string, email: string, password: strin
   return result.rows[0];
 }
 
-export const deleteUserById = async(id: number) => {
+export const deleteUserById = async(id: string) => {
   await pool.query("DELETE FROM users WHERE id = $1", [id]);
 }
 
-export const updateUserById = async (id:number, username: string, email: string, password: string, salt: string, sessionToken: string) => {
+export const updateUserById = async (id: string, values: Record<string, any>) => {
+  const {
+    username,
+    email,
+    password,
+    salt = null,
+    sessionToken = null, 
+  } = values
+
   const result = await pool.query(
     "UPDATE users SET username = $2, email = $3, authentication = ROW($4, $5, $6)::authentication_type WHERE id = $1 RETURNING *",
     [id, username, email, password, salt, sessionToken]

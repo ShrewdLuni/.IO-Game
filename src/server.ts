@@ -1,11 +1,27 @@
 import express from "express";
+import http from "http";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import compression from "compression"; 
+import cors from "cors";
+
 import path from "path";
 import fs from "fs";
+
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { PlayerData, ProjectileData } from "./types/PlayerTypes";
 
 const app = express();
+
+app.use(cors({
+  credentials: true,
+}))
+app.use(compression());
+app.use(cookieParser());
+app.use(bodyParser.json());
+
+
 const port = 3000;
 
 const server = createServer(app);

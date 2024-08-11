@@ -3,11 +3,11 @@ import pool from "../db";
 interface Authentication {
   password: string;
   salt: string;
-  sessionToken: string;
+  sessionToken?: string;
 }
 
 interface User {
-  id: string;
+  id?: string;
   username: string;
   email: string;
   authentication: Authentication;
@@ -51,18 +51,11 @@ export const getUserById = async (id: string): Promise<User | null> => {
   return result.rows.length ? mapUser(result.rows[0]) : null;
 };
 
-export const createUser = async (values: Record<string, any>): Promise<User> => {
-  const {
-    username,
-    email,
-    password,
-    salt = null,
-    sessionToken = null, 
-  } = values;
+export const createUser = async (data: User): Promise<User> => {
 
   const result = await pool.query(
     "INSERT INTO users (username, email, authentication) VALUES ($1, $2, ROW($3, $4, $5)::authentication_type) RETURNING *",
-    [username, email, password, salt, sessionToken]
+    [data.username, data.email, data.authentication.password, data.authentication.salt, data.authentication.sessionToken]
   );
   return mapUser(result.rows[0]);
 };
@@ -71,18 +64,10 @@ export const deleteUserById = async (id: string): Promise<void> => {
   await pool.query("DELETE FROM users WHERE id = $1", [id]);
 };
 
-export const updateUserById = async (id: string, values: Record<string, any>): Promise<User> => {
-  const {
-    username,
-    email,
-    password,
-    salt = null,
-    sessionToken = null, 
-  } = values;
-
+export const updateUserById = async (id: string, data: User): Promise<User> => {
   const result = await pool.query(
     "UPDATE users SET username = $2, email = $3, authentication = ROW($4, $5, $6)::authentication_type WHERE id = $1 RETURNING *",
-    [id, username, email, password, salt, sessionToken]
+    [id, data.username, data.email, data.authentication.password, data.authentication.salt, data.authentication.sessionToken]
   );
   return mapUser(result.rows[0]);
 };

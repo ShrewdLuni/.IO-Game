@@ -4,10 +4,9 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression"; 
 import cors from "cors";
-
+import router from "./router";
 import path from "path";
 import fs from "fs";
-
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { PlayerData, ProjectileData } from "./types/PlayerTypes";
@@ -17,10 +16,12 @@ const app = express();
 app.use(cors({
   credentials: true,
 }))
+
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+app.use("/", router());
 
 const port = 3000;
 

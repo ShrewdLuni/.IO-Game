@@ -1,6 +1,40 @@
 import express from "express";
-import { creatUser, getUserByEmail } from "../models/users";
+import { createUser, getUserByEmail, updateUserById } from "../models/users";
 import { authentication, random } from "../helpers";
+
+export const login = async (req: express.Request, res: express.Response) => {
+  try {
+    const { email, password } = req.body;
+
+    if(!email || !password) {
+      return res.sendStatus(400);
+    }
+
+    const user = await getUserByEmail(email);
+
+    if(!user) {
+      return res.sendStatus(400);
+    }
+
+    const expectedHash = authentication(user.authentication.salt, password);
+
+    if(user.authentication.password == expectedHash){
+      return res.sendStatus(403);
+    }
+
+    const salt = random();
+
+    user.authentication.sessionToken = authentication(salt, user.id!);
+    await updateUserById(user.id!, {username: user.username, email: user.email, authentication: {password: user.authentication.password ,salt: user.authentication.salt, sessionToken: user.authentication.sessionToken}})
+
+    res.cookie("SHREWD-AUTH", user.authentication.sessionToken, {domain: "localhost", path: "/"});
+
+    return res.status(200).json(user).end();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(400);
+  }
+}
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
@@ -18,7 +52,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     }
 
     const salt = random();
-    const user = await creatUser({username, email, salt, password: authentication(salt, password)});
+    const user = await createUser({username: username, email: email, authentication: {password: authentication(salt, password), salt: salt}});
 
     return res.status(200).json(user).end();
   } catch (error) {

@@ -7,7 +7,7 @@ const setupDatabase = async () => {
     await client.query(`
       CREATE TYPE authentication_type AS (
         password VARCHAR(100),
-        salt VARCHAR(50),
+        salt VARCHAR(255),
         session_token VARCHAR(100)
       );
     `);

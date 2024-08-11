@@ -17,8 +17,8 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const expectedHash = authentication(user.authentication.salt, password);
-
-    if(user.authentication.password == expectedHash){
+    console.log(2, user.authentication.salt, password, expectedHash)
+    if(user.authentication.password != expectedHash){
       return res.sendStatus(403);
     }
 
@@ -53,7 +53,7 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     const salt = random();
     const user = await createUser({username: username, email: email, authentication: {password: authentication(salt, password), salt: salt}});
-
+    console.log(1,salt,password,authentication(salt, password))
     return res.status(200).json(user).end();
   } catch (error) {
     console.log(error);

@@ -47,7 +47,7 @@ export const getUserBySessionToken = async (sessionToken: string): Promise<User[
 };
 
 export const getUserById = async (id: string): Promise<User | null> => {
-  const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+  const result = await pool.query("SELECT * FROM users WHERE user_id = $1", [id]);
   return result.rows.length ? mapUser(result.rows[0]) : null;
 };
 
@@ -61,12 +61,12 @@ export const createUser = async (data: User): Promise<User> => {
 };
 
 export const deleteUserById = async (id: string): Promise<void> => {
-  await pool.query("DELETE FROM users WHERE id = $1", [id]);
+  await pool.query("DELETE FROM users WHERE user_id = $1", [id]);
 };
 
 export const updateUserById = async (id: string, data: User): Promise<User> => {
   const result = await pool.query(
-    "UPDATE users SET username = $2, email = $3, authentication = ROW($4, $5, $6)::authentication_type WHERE id = $1 RETURNING *",
+    "UPDATE users SET username = $2, email = $3, authentication = ROW($4, $5, $6)::authentication_type WHERE user_id = $1 RETURNING *",
     [id, data.username, data.email, data.authentication.password, data.authentication.salt, data.authentication.sessionToken]
   );
   return mapUser(result.rows[0]);

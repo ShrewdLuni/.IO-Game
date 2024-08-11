@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { PlayerData, ProjectileData } from "./types/PlayerTypes";
 
 const app = express();
 const port = 3000;
@@ -12,6 +13,7 @@ const io = new Server(server, { pingInterval: 2000, pingTimeout: 5000});
 
 app.use(express.static(path.join(__dirname, "../public")));
 
+//routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/index.html"));
 });
@@ -27,36 +29,9 @@ app.get("/profile/:username", (req, res) => {
   res.send(template.replace(/{{name}}/g, username));
 });
 
-
-
-type Stats = {
-  regeneration: number;
-  maxHealth: number;
-  bulletSpeed: number;
-  damage: number;
-  shootingSpeed: number;
-  rotationSpeed: number;
-  speed: number;
-};
-
-type CurrentState = {
-  health: number;
-  lastRegeneration: number;
-  lastShot: number;
-  score: number;
-};
-
-type PlayerData = {
-  position: { x: number; y: number };
-  rotation: number;
-  targetRotation: number;
-  username: string;
-  stats: Stats;
-  currentState: CurrentState;
-};
-
+//game logic
 const players: { [id: string]: PlayerData } = {}
-const projectiles: {[id: number]: {position: {x: number, y: number}, velocity: {x: number, y: number}, playerID: string, timestamp: number}} = {}
+const projectiles: {[id: number]: ProjectileData } = {}
 
 let projectileID: number = 0;
 
@@ -172,6 +147,7 @@ io.on("connection", (socket) => {
         break;
       case "Movement Speed":
         players[socket.id].stats.speed += 5;
+        break;
       default:
         console.log("Invalid upgrade");
         break;
@@ -210,7 +186,7 @@ function updateProjectiles(){
           delete projectiles[id];
           delete players[pID]
         } else {
-          console.log(players[pID].currentState.health)
+          // console.log(players[pID].currentState.health)
         }
         break
       }
@@ -241,6 +217,7 @@ function updateHealth(){
   }
 }
 
+//run server
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 })

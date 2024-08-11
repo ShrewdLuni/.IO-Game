@@ -1,4 +1,4 @@
-import pool from "../db"
+import pool from "../db";
 
 const setupDatabase = async () => {
   const client = await pool.connect();
@@ -18,6 +18,31 @@ const setupDatabase = async () => {
         username VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
         authentication authentication_type NOT NULL
+      );
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS user_stats (
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        kill_count INTEGER DEFAULT 0,
+        death_count INTEGER DEFAULT 0,
+        damage_dealed INTEGER DEFAULT 0,
+        damage_absorbed INTEGER DEFAULT 0,
+        time_in_game INTEGER DEFAULT 0,
+        PRIMARY KEY (user_id)
+      );
+    `);
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS game_session_stats (
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        game_session_id SERIAL PRIMARY KEY,
+        session_kill_count INTEGER DEFAULT 0,
+        session_damage_dealed INTEGER DEFAULT 0,
+        session_damage_absorbed INTEGER DEFAULT 0,
+        time_in_session INTEGER DEFAULT 0,
+        scoreboard_place INTEGER DEFAULT 0,
+        CONSTRAINT unique_game_session UNIQUE (user_id, game_session_id)
       );
     `);
 

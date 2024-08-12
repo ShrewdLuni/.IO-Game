@@ -27,7 +27,7 @@ const scoreContainer = document.getElementById("scoreContainer");
 
 function updateLeaderboard(players){
   scoreContainer.innerHTML = "";
-  Object.values(players).forEach(player => {
+  Object.values(players).sort((a, b) => b.currentState.score - a.currentState.score).forEach(player => {
     const score = document.createElement("div");
     score.textContent = player.username + " " + player.currentState.score;
   

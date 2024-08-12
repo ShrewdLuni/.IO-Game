@@ -9,7 +9,7 @@ import path from "path";
 import fs from "fs";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { PlayerData, ProjectileData } from "./types/PlayerTypes";
+import { BotData, PlayerData, ProjectileData } from "./types/PlayerTypes";
 
 const app = express();
 
@@ -50,11 +50,12 @@ app.get("/profile/:username", (req, res) => {
 const players: { [id: string]: PlayerData } = {}
 const projectiles: {[id: number]: ProjectileData } = {}
 const activeBots: string[] = []
+const activeBotsData: { [id: string]: BotData } = {}
 
 let projectileID: number = 0;
 let botID: number = 0;
 
-const desiredPlayersCount = 10;
+const desiredPlayersCount = 5;
 const mapSize = 10000;
 
 io.on("connection", (socket) => {
@@ -164,20 +165,29 @@ setInterval(() => {
 }, 15)
 
 function updateBots(){
+  //spawn bots
   let playersCount = Object.keys(players).length
-  while(playersCount < 10){
+  while(playersCount <= desiredPlayersCount){
     playersCount++;
     botID++;
-    activeBots.push(botID.toString());
-    createPlayer(botID.toString(), `Bot${Math.floor(Math.random() * 90) + 10}`)
-    console.log(playersCount);
+
+    let currentID = botID.toString();
+    activeBots.push(currentID);
+    activeBotsData[currentID] = {currentState: "Patrol"};
+
+    createPlayer(botID.toString(), `Bot ${Math.floor(Math.random() * 90) + 10}`)
   }
   while(playersCount > desiredPlayersCount && activeBots){
     playersCount--;
-    let botID = activeBots.pop();
-    if(botID != undefined){
-      delete players[botID];
+    let currentID = activeBots.pop();
+    if(currentID != undefined){
+      delete activeBotsData[currentID];
+      delete players[currentID];
     }
+  }
+  //bots loop
+  for(const bID in activeBots){
+    const bot = players[bID];
   }
 }
 
@@ -198,11 +208,18 @@ function updateProjectiles(){
       if (distance < 30 && projectiles[id].playerID !== pID){
 
         players[pID].currentState.health -= players[projectiles[id].playerID].stats.damage;
-        if(players[pID].currentState.health <= 0){
+        if(players[pID].currentState.health <= 0) {
           players[projectiles[id].playerID].currentState.score += 100;
-          io.to(pID).emit("hitByProjectile");
-          delete projectiles[id];
-          delete players[pID]
+          if(pID in activeBots) {
+            players[pID].position = { x: mapSize * Math.random(), y: mapSize * Math.random() };
+            players[pID].currentState.health = 1;
+            players[pID].currentState.score = 0;
+            console.log(players[pID].position)
+          } else{ 
+            io.to(pID).emit("hitByProjectile");
+            delete projectiles[id];
+            delete players[pID]
+          }
         } else {
           // console.log(players[pID].currentState.health)
         }

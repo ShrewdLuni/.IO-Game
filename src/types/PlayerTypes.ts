@@ -31,4 +31,8 @@ type ProjectileData = {
   timestamp: number;
 }
 
-export { PlayerData, ProjectileData }
+type BotData = {
+ currentState: "Patrol" | "Chase" | "Flee";
+}
+
+export { PlayerData, ProjectileData, BotData }

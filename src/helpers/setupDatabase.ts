@@ -36,13 +36,13 @@ const setupDatabase = async () => {
     await client.query(`
       CREATE TABLE IF NOT EXISTS game_session_stats (
         user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
-        game_session_id SERIAL PRIMARY KEY,
-        session_kill_count INTEGER DEFAULT 0,
-        session_damage_dealed INTEGER DEFAULT 0,
-        session_damage_absorbed INTEGER DEFAULT 0,
+        session_id SERIAL PRIMARY KEY,
+        kill_count INTEGER DEFAULT 0,
+        damage_dealed INTEGER DEFAULT 0,
+        damage_absorbed INTEGER DEFAULT 0,
         time_in_session INTEGER DEFAULT 0,
         scoreboard_place INTEGER DEFAULT 0,
-        CONSTRAINT unique_game_session UNIQUE (user_id, game_session_id)
+        CONSTRAINT unique_game_session UNIQUE (user_id, session_id)
       );
     `);
 

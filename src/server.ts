@@ -49,9 +49,12 @@ app.get("/profile/:username", (req, res) => {
 //game logic
 const players: { [id: string]: PlayerData } = {}
 const projectiles: {[id: number]: ProjectileData } = {}
+const activeBots: string[] = []
 
 let projectileID: number = 0;
+let botID: number = 0;
 
+const desiredPlayersCount = 10;
 const mapSize = 10000;
 
 io.on("connection", (socket) => {
@@ -63,27 +66,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("startGame", (username) => {
-    players[socket.id] = {
-      position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
-      rotation: 0,
-      targetRotation: 0,
-      username: username,
-      stats: {
-        regeneration: 15,
-        maxHealth: 100,
-        bulletSpeed: 20,
-        damage: 5,
-        shootingSpeed: 10,
-        rotationSpeed: 72,
-        speed: 10,
-      },
-      currentState: {
-        health: 1,
-        lastRegeneration: 0,
-        lastShot: 0,
-        score: 0,
-      }
-    };
+    createPlayer(socket.id, username);
   })
 
   socket.on("moveUpdate", (isActive : boolean) => {
@@ -141,7 +124,6 @@ io.on("connection", (socket) => {
     }
   })
 
-
   socket.on("statsUpgrade", (upgradedStat) => {
     switch (upgradedStat) {
       case "Regeneration":
@@ -175,10 +157,29 @@ io.on("connection", (socket) => {
 setInterval(() => {
   updateProjectiles();
   updateHealth();
+  updateBots();
 
   io.emit("updateProjectiles", projectiles)
   io.emit("updatePlayers", players)
 }, 15)
+
+function updateBots(){
+  let playersCount = Object.keys(players).length
+  while(playersCount < 10){
+    playersCount++;
+    botID++;
+    activeBots.push(botID.toString());
+    createPlayer(botID.toString(), `Bot${Math.floor(Math.random() * 90) + 10}`)
+    console.log(playersCount);
+  }
+  while(playersCount > desiredPlayersCount && activeBots){
+    playersCount--;
+    let botID = activeBots.pop();
+    if(botID != undefined){
+      delete players[botID];
+    }
+  }
+}
 
 function updateProjectiles(){
   const now = Date.now();
@@ -232,6 +233,30 @@ function updateHealth(){
       player.currentState.lastRegeneration = now;
     }
   }
+}
+
+function createPlayer(id: string, username: string){
+  players[id] = {
+    position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
+    rotation: 0,
+    targetRotation: 0,
+    username: username,
+    stats: {
+      regeneration: 15,
+      maxHealth: 100,
+      bulletSpeed: 20,
+      damage: 5,
+      shootingSpeed: 10,
+      rotationSpeed: 72,
+      speed: 10,
+    },
+    currentState: {
+      health: 1,
+      lastRegeneration: 0,
+      lastShot: 0,
+      score: 0,
+    }
+  };
 }
 
 //run server

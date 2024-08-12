@@ -186,8 +186,30 @@ function updateBots(){
     }
   }
   //bots loop
-  for(const bID in activeBots){
+  for(const bID of activeBots){
     const bot = players[bID];
+    const botData = activeBotsData[bID];
+
+    //change state
+    if(shouldFlee()){
+      botData.currentState = "Flee";
+    } else if (shouldChase()){
+      botData.currentState = "Chase"
+    } else {
+      botData.currentState = "Patrol";
+    }
+    //action
+    switch (botData.currentState) {
+      case "Patrol":
+        patrol()
+        break;
+      case "Chase":
+        chase()
+        break;
+      case "Flee":
+        flee()
+        break;
+    }
   }
 }
 
@@ -274,6 +296,26 @@ function createPlayer(id: string, username: string){
       score: 0,
     }
   };
+}
+
+function shouldFlee() : boolean {
+  return false;
+}
+
+function shouldChase() : boolean {
+ return false;
+}
+
+function patrol(){
+
+}
+
+function chase(){
+
+}
+
+function flee(){
+
 }
 
 //run server

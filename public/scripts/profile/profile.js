@@ -1,4 +1,4 @@
-const statsContainer = document.getElementById("statsContainer");
+const statsContainer = document.getElementById("stats");
 
 async function fetchProfileData() {
   const pathParts = window.location.pathname.split("/");
@@ -33,16 +33,24 @@ function updateStatsUI(profileData) {
 
     const statName = document.createElement("p");
     statName.textContent = stat.label;
+    statName.classList.add("statName")
 
     const statValue = document.createElement("p");
     statValue.textContent = stat.value || "N/A";
+
+    if (typeof stat.value === 'number' && stat.value < 100) {
+      statValue.textContent = stat.value.toFixed(2);
+    } else {
+      statValue.textContent = stat.value;
+    }
+
+    statValue.classList.add("statValue")
 
     statElement.appendChild(statName);
     statElement.appendChild(statValue);
     statsContainer.appendChild(statElement);
   });
 }
-
 
 document.addEventListener("DOMContentLoaded", async () => {
   const profileData = await fetchProfileData();

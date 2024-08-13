@@ -4,17 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{name}}'s Profile</title>
-    <!-- <link rel="stylesheet" href="/styles.css"> -->
+    <style>
+      body{
+        background-color: black;
+        padding: 2rem;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      }
+      p{
+        margin: 0;
+      }
+      .statsWrapper{
+        row-gap: 2rem;
+        justify-content: center;
+        padding: 2rem;
+        color: white;
+        align-items: center;
+        font-weight: 700;
+        border-radius: 1rem;
+      }
+
+      .stats{
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        background-color: #272029;
+        border-radius: 1rem;
+        padding: 1rem;
+        gap: 2rem;
+
+      }
+
+      .statsContainer > div {
+        flex: 1;
+        text-align: left;
+      }
+
+      .statName{
+        font-size: 0.8rem;
+      }
+      .statValue{
+        font-size: 2.5rem;
+      }
+
+      .userinfo{
+        align-items: center;
+      }
+      .username{
+        margin-top: 10px;
+        font-size: 2rem;
+      }
+
+      .flexColumn{
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  <div>
-    <div>Picture</div>
-    <p>{{name}}</p>
-  </div>
-  <div>
-    divider
-  </div>
-  <div id="statsContainer" class="statsContainer">
+  <div class="statsWrapper flexColumn">
+    <div class="userinfo flexColumn">
+      <i class="fa fa-user-circle" aria-hidden="true" style="font-size:3rem;"></i>
+      <p class="username">{{name}}</p>
+    </div>
+    <div id="stats" class="stats">
+    </div>
   </div>
   <script src="/scripts/profile/profile.js"></script>
 </body>

@@ -1,7 +1,7 @@
 import pool from "../db";
 
 interface GameSessionStatistics {
-  user_id: number;
+  user_id: string;
   session_id?: number;
   kill_count: number;
   damage_dealed: number;

@@ -1,7 +1,7 @@
 import pool from "../db";
 
 interface UserStatistics {
-  user_id: number;
+  user_id: string;
   kill_count: number;
   death_count: number;
   damage_dealed: number;

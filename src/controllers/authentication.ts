@@ -1,6 +1,8 @@
 import express from "express";
 import { createUser, getUserByEmail, updateUserByID } from "../models/users";
+
 import { authentication, random } from "../helpers";
+import { createUserStatistics, getUserStatisticsByID } from "../models/userStats";
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
@@ -52,6 +54,12 @@ export const register = async (req: express.Request, res: express.Response) => {
 
     const salt = random();
     const user = await createUser({username: username, email: email, authentication: {password: authentication(salt, password), salt: salt}});
+
+    let userStats = await getUserStatisticsByID(user.user_id!)
+    if((userStats == null || userStats == undefined) && user.user_id != undefined){
+      userStats = await createUserStatistics({user_id: user.user_id, kill_count: 0, death_count: 0, damage_dealed: 0, damage_absorbed: 0, time_in_game: 0});
+    }
+
     return res.status(200).json(user).end();
   } catch (error) {
     console.log(error);

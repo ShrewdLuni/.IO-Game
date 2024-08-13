@@ -36,6 +36,12 @@ export const getUsers = async (): Promise<User[]> => {
   return result.rows.map(mapUser);
 };
 
+export const getUserByUsername = async (username: string): Promise<User | null> => {
+  const result = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
+  return result.rows.length ? mapUser(result.rows[0]) : null;
+};
+
+
 export const getUserByEmail = async (email: string): Promise<User | null> => {
   const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
   return result.rows.length ? mapUser(result.rows[0]) : null;

@@ -1,11 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: left;
+    }
+    p{
+      margin: 0;
+    }
+    .container {
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+    }
+    .error-code {
+      font-size: 12vw;
+      font-weight: bold;
+    }
+    .messageContainer{
+      width: 100%;
+    }
+    .message {
+      font-size: 8vw;
+      font-weight: semi-bold;
+      margin: 0;
+    }
+    .description {
+      color: gray;
+      font-size: 4vw;
+      margin: 0;
+    }
+    .back-link {
+      color: #1E90FF;
+      font-size: 4vw;
+      margin-top: 2rem;
+      text-decoration: none;
+    }
+    @media (min-width: 768px) {
+      .error-code {
+        font-size: 6vw;
+      }
+      .message {
+        font-size: 4vw;
+      }
+      .description {
+        font-size: 2vw;
+      }
+      .back-link {
+        font-size: 2vw;
+      }
+    }
+  </style>
 </head>
 <body>
-  404
+  <div class="container">
+    <p class="error-code">404</p> 
+    <div class="messageContainer">
+      <p class="message">Something went wrong.</p>
+      <p class="description">The page is missing or you assembled the link incorrectly</p>
+    </div>
+    <a class="back-link" href="/">Go back to home page</a>
+  </div>
 </body>
 </html>

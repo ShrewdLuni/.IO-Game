@@ -33,6 +33,7 @@ type ProjectileData = {
 
 type BotData = {
  currentState: "Patrol" | "Chase" | "Flee";
+ lastPositionUpdate: number;
 }
 
 export { PlayerData, ProjectileData, BotData }

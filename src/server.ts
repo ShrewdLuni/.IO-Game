@@ -10,6 +10,7 @@ import fs from "fs";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { BotData, PlayerData, ProjectileData } from "./types/PlayerTypes";
+import { getUserByUsername } from "./models/users";
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use("/", router());
+app.use("/api", router());
 
 const port = 3000;
 
@@ -39,8 +40,14 @@ app.get("/leaderboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/pages/leaderboard.html"));
 });
 
-app.get("/profile/:username", (req, res) => {
+app.get("/profile/:username", async (req, res) => {
   const username = req.params.username;
+
+  if(await getUserByUsername(username) == null){
+    res.sendFile(path.join(__dirname, "../public/pages/404.html"));
+    return;
+  }
+
   const filePath = path.join(__dirname, "../public/pages", "profile.html");
   let template = fs.readFileSync(filePath, "utf-8");
   res.send(template.replace(/{{name}}/g, username));
@@ -57,6 +64,7 @@ let botID: number = 0;
 
 const desiredPlayersCount = 5;
 const mapSize = 10000;
+const mapCenter = { x: mapSize / 2, y: mapSize / 2 };
 
 io.on("connection", (socket) => {
   console.log("user has connected")
@@ -71,22 +79,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("moveUpdate", (isActive : boolean) => {
-    if (isActive && players[socket.id]) {
-      players[socket.id].position.x += Math.cos(players[socket.id].rotation) * players[socket.id].stats.speed;
-      players[socket.id].position.y += Math.sin(players[socket.id].rotation) * players[socket.id].stats.speed;
-      if(players[socket.id].position.x < -10){
-        players[socket.id].position.x = -10
-      }
-      if(players[socket.id].position.x >= mapSize + 10){
-        players[socket.id].position.x = mapSize + 10
-      }
-      if(players[socket.id].position.y < -10){
-        players[socket.id].position.y = -10
-      }
-      if(players[socket.id].position.y >= mapSize + 10){
-        players[socket.id].position.y = mapSize + 10
-      }
-    }
+    movePlayer(socket.id, isActive);
   })
 
   socket.on("rotationUpdate", (rotation) => {
@@ -100,29 +93,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("projectileUpdate", (isActive : boolean) => {
-    const now = Date.now()
-
-    if (isActive && players[socket.id] && now - players[socket.id].currentState.lastShot >= 1000 / players[socket.id].stats.shootingSpeed){
-      
-      projectileID++;
-      
-      projectiles[projectileID] = {
-        position: {
-          x: players[socket.id].position.x, 
-          y: players[socket.id].position.y
-        },
-
-        velocity: {
-          x: Math.cos(players[socket.id].rotation) * players[socket.id].stats.bulletSpeed, 
-          y: Math.sin(players[socket.id].rotation) * players[socket.id].stats.bulletSpeed
-        },
-
-        playerID: socket.id,
-        timestamp: now
-      }
-
-      players[socket.id].currentState.lastShot = now;
-    }
+    playerShoot(socket.id, isActive);
   })
 
   socket.on("statsUpgrade", (upgradedStat) => {
@@ -173,7 +144,7 @@ function updateBots(){
 
     let currentID = botID.toString();
     activeBots.push(currentID);
-    activeBotsData[currentID] = {currentState: "Patrol"};
+    activeBotsData[currentID] = {currentState: "Patrol",lastPositionUpdate:9999};
 
     createPlayer(botID.toString(), `Bot ${Math.floor(Math.random() * 90) + 10}`)
   }
@@ -191,9 +162,9 @@ function updateBots(){
     const botData = activeBotsData[bID];
 
     //change state
-    if(shouldFlee()){
+    if(shouldFlee(bID)){
       botData.currentState = "Flee";
-    } else if (shouldChase()){
+    } else if (shouldChase(bID)){
       botData.currentState = "Chase"
     } else {
       botData.currentState = "Patrol";
@@ -201,13 +172,13 @@ function updateBots(){
     //action
     switch (botData.currentState) {
       case "Patrol":
-        patrol()
+        patrol(bID)
         break;
       case "Chase":
-        chase()
+        chase(bID)
         break;
       case "Flee":
-        flee()
+        flee(bID)
         break;
     }
   }
@@ -228,7 +199,8 @@ function updateProjectiles(){
       )
 
       if (distance < 30 && projectiles[id].playerID !== pID){
-
+        if(!players[pID] || !players[projectiles[id].playerID])
+          return;
         players[pID].currentState.health -= players[projectiles[id].playerID].stats.damage;
         if(players[pID].currentState.health <= 0) {
           players[projectiles[id].playerID].currentState.score += 100;
@@ -236,7 +208,6 @@ function updateProjectiles(){
             players[pID].position = { x: mapSize * Math.random(), y: mapSize * Math.random() };
             players[pID].currentState.health = 1;
             players[pID].currentState.score = 0;
-            console.log(players[pID].position)
           } else{ 
             io.to(pID).emit("hitByProjectile");
             delete projectiles[id];
@@ -277,20 +248,20 @@ function updateHealth(){
 function createPlayer(id: string, username: string){
   players[id] = {
     position: { x: mapSize * Math.random(), y: mapSize * Math.random() },
-    rotation: 0,
+    rotation: 360 * Math.random(),
     targetRotation: 0,
     username: username,
     stats: {
       regeneration: 15,
       maxHealth: 100,
-      bulletSpeed: 20,
+      bulletSpeed: 50,
       damage: 5,
-      shootingSpeed: 10,
-      rotationSpeed: 72,
+      shootingSpeed: 50,
+      rotationSpeed: 18,
       speed: 10,
     },
     currentState: {
-      health: 1,
+      health: 100,
       lastRegeneration: 0,
       lastShot: 0,
       score: 0,
@@ -298,24 +269,144 @@ function createPlayer(id: string, username: string){
   };
 }
 
-function shouldFlee() : boolean {
+function movePlayer(id: string, isActive: boolean){
+  if (isActive && players[id]) {
+    players[id].position.x += Math.cos(players[id].rotation) * players[id].stats.speed;
+    players[id].position.y += Math.sin(players[id].rotation) * players[id].stats.speed;
+
+    if(players[id].position.x < -10){
+      players[id].position.x = -10
+    }
+    if(players[id].position.x >= mapSize + 10){
+      players[id].position.x = mapSize + 10
+    }
+    if(players[id].position.y < -10){
+      players[id].position.y = -10
+    }
+    if(players[id].position.y >= mapSize + 10){
+      players[id].position.y = mapSize + 10
+    }
+  }
+}
+
+function rotateBot(id: string){
+  const bot = players[id];
+
+  let difference = bot.targetRotation - bot.rotation;
+  difference = (difference + Math.PI) % (2 * Math.PI) - Math.PI;
+
+  if (difference > Math.PI) difference -= 2 * Math.PI;
+  if (difference < -Math.PI) difference += 2 * Math.PI;
+
+  if(Math.abs(difference) < Math.PI / bot.stats.rotationSpeed){
+    bot.rotation = bot.targetRotation;
+  } else{
+    bot.rotation += Math.sign(difference) *  Math.PI / bot.stats.rotationSpeed;
+  }
+}
+
+function playerShoot(id: string, isActive: boolean){
+  const now = Date.now()
+
+  if (isActive && players[id] && now - players[id].currentState.lastShot >= 1000 / players[id].stats.shootingSpeed){
+    
+    projectileID++;
+    
+    projectiles[projectileID] = {
+      position: {
+        x: players[id].position.x, 
+        y: players[id].position.y
+      },
+
+      velocity: {
+        x: Math.cos(players[id].rotation) * players[id].stats.bulletSpeed, 
+        y: Math.sin(players[id].rotation) * players[id].stats.bulletSpeed
+      },
+
+      playerID: id,
+      timestamp: now
+    }
+
+    players[id].currentState.lastShot = now;
+  }
+}
+
+function shouldFlee(id: string) : boolean {
+
   return false;
 }
 
-function shouldChase() : boolean {
- return false;
+function shouldChase(id: string) : boolean {
+  const closestPlayerData = findClosestPlayer(id);
+  if(!closestPlayerData)
+    return false;
+  if(closestPlayerData?.distance > 2000 || closestPlayerData?.distance < 200)
+    return false;
+  return true;
 }
 
-function patrol(){
+function patrol(id: string){
+  const bot = players[id];
+
+  if(!bot)
+    return;
+
+  const botData = activeBotsData[id];
+  const now = Date.now();
+
+  if (now - botData.lastPositionUpdate > 300000 * Math.random()) {
+    const goToPosition = { x: mapSize * Math.random(), y: mapSize * Math.random() };
+    const directionToPosition = Math.atan2(goToPosition.y - bot.position.y, goToPosition.x - bot.position.x) + ((Math.random() - 0.5) * 2 * 0.35);
+
+    bot.targetRotation = directionToPosition;
+    botData.lastPositionUpdate = now;
+  }
+
+  rotateBot(id)
+  movePlayer(id, true);
+}
+
+function chase(id: string){
+  const closestPlayerData = findClosestPlayer(id);
+  if (closestPlayerData?.id) {
+      const bot = players[id];
+      const closestPlayer = players[closestPlayerData.id];
+ 
+      const directionToPlayer = Math.atan2(closestPlayer.position.y - bot.position.y, closestPlayer.position.x - bot.position.x);
+
+      bot.targetRotation = directionToPlayer + ((Math.random() - 0.5) * 2 * 0.35);
+      rotateBot(id)
+      movePlayer(id, true);
+      playerShoot(id, true);
+  } else{
+    patrol(id);
+  }
+}
+
+function flee(id: string){
 
 }
 
-function chase(){
+function findClosestPlayer(id: string): { id: string | null; distance: number; } | null {
+  const bot = players[id];
+  if (!bot) return null;
 
-}
+  let closestPlayerID: string | null = null;
+  let minDistance = Infinity;
 
-function flee(){
+  for (const pID in players) {
+      if (pID === id) continue;
 
+      const player = players[pID];
+      const distance = Math.hypot(player.position.x - bot.position.x, player.position.y - bot.position.y);
+
+      if (distance < minDistance) {
+          minDistance = distance;
+          closestPlayerID = pID;
+      }
+  }
+
+  return {id: closestPlayerID, distance: minDistance};
 }
 
 //run server

@@ -1,19 +1,44 @@
 body {
   margin: 0;
   background-color: black;
+  color: white;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.time {
+.information {
+
+}
+
+.settings {
   display: flex;
   flex-direction: row;
+  justify-content: left;
+  gap: 8px
 }
 
-p {
-  color: white;
-  font-weight: 500;
+.headers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-p.active {
-  font-weight: bold;
-  
+.headers p{
+  padding: 10px;
+}
+
+.headers p:nth-child(2) {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.users {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 8px;
 }

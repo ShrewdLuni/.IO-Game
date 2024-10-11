@@ -4,27 +4,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leaderboard | astr.io</title>
-  <link rel="stylesheet" href="/public/css/leaderboard/style.css">
+  <link rel="stylesheet" href="/css/leaderboard/style.css">
 </head>
 <body>
-  <div>
-    Leaderboard
-    <div>
-      Settings/Filters
-    </div>
-    <div>
+  <div class="main">
+    <div class="information">
       <h1>Astr.io Global Leaaderboards</h1>
       <p>Leaderboards refresh in 2h 59m.</p>
     </div>
-    <div>
-      <p>#</p>
-      <p>Profile</p>
-      <p>Kills</p>
-      <p>K/D</p>
-    </div>
-    <div>
 
+    <div class="settings">
+      <!-- Settings/Filters -->
+      <div>
+        <p>Time Window</p>
+        <div>
+
+        </div>
+      </div>
+      <div>
+        <p>Stat</p>
+        <div>
+
+        </div>
+      </div>
     </div>
+    <table class="users-table">
+      <tr>
+        <th>#</th>
+        <th>Profile</th>
+        <th>Kills</th>
+        <th>K/D</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>
+          <div class="profile-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/800px-Cat03.jpg" alt="">
+            <p>Username</p>
+          </div>
+        </td>
+        <td>32</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>
+          <div class="profile-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/800px-Cat03.jpg" alt="">
+            <p>Username</p>
+          </div>
+        </td>
+        <td>32</td>
+        <td>8</td>
+      </tr>
+    </table>
   </div>
   <script src="/scripts/leaderboard/leaderboard.js"></script>
 </body>

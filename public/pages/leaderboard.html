@@ -9,25 +9,29 @@
 <body>
   <div class="main">
     <div class="information">
-      <h1>Astr.io Global Leaaderboards</h1>
-      <p>Leaderboards refresh in 2h 59m.</p>
+      <h1>Leaderboards</h1>
+      <p>Next update in 2h 59m.</p>
     </div>
 
     <div class="settings">
-      <!-- Settings/Filters -->
-      <div>
+      <div class="settings-option">
         <p>Time Window</p>
-        <div>
-
+        <div class="option-container">
+          <button>90</button>
+          <button>60</button>
+          <button>30</button>
         </div>
       </div>
-      <div>
+      <div class="settings-option">
         <p>Stat</p>
-        <div>
-
+        <div class="option-container">
+          <button>W</button>
+          <button>K</button>
+          <button>K/D</button>
         </div>
       </div>
     </div>
+
     <table class="users-table">
       <tr>
         <th>#</th>
@@ -59,6 +63,7 @@
       </tr>
     </table>
   </div>
+
   <script src="/scripts/leaderboard/leaderboard.js"></script>
 </body>
 </html>

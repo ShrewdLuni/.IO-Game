@@ -9,15 +9,35 @@ body {
   align-items: center;
 }
 
-.information {
+.main {
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+}
 
+.information {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.information h1{
+  margin: 0;
+}
+
+.information p{
+  margin: 0;
+  color: rgba(255, 255, 255, .85);
+  font-size: xx-small;
 }
 
 .settings {
   display: flex;
   flex-direction: row;
   justify-content: left;
-  gap: 8px
+  gap: 8px;
+  margin-bottom: 30px;
+  margin-top: 10px;
 }
 
 .headers {
@@ -27,18 +47,54 @@ body {
   gap: 8px;
 }
 
-.headers p{
-  padding: 10px;
+.settings-option {
+  display: flex;
+  flex-direction: column;
 }
 
-.headers p:nth-child(2) {
-  flex-grow: 1;
+.settings-option p {
+  color: rgba(255, 255, 255, .85);
+  font-size: x-small;
+}
+
+.option-container {
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, .15);
+  padding: 6px 8px;
+}
+
+.option-container button{
+  color: rgba(255, 255, 255, .75);
+  background: rgba(0,0,0,0);
+  border: none;
+  padding: 6px;
+}
+
+.option-container button:hover{
+  background-color: rgba(255, 255, 255, .75);
+  color: black;
+  border-radius: 6px;
+}
+
+.users-table {
+  width: 100%;
+}
+
+th{
   text-align: left;
 }
 
-.users {
+.profile-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.profile-container img {
+  height: 1.5em;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
 }

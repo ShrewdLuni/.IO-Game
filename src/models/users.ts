@@ -41,7 +41,6 @@ export const getUserByUsername = async (username: string): Promise<User | null> 
   return result.rows.length ? mapUser(result.rows[0]) : null;
 };
 
-
 export const getUserByEmail = async (email: string): Promise<User | null> => {
   const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
   return result.rows.length ? mapUser(result.rows[0]) : null;
@@ -58,7 +57,6 @@ export const getUserByID = async (id: string): Promise<User | null> => {
 };
 
 export const createUser = async (data: User): Promise<User> => {
-
   const result = await pool.query(
     "INSERT INTO users (username, email, authentication) VALUES ($1, $2, ROW($3, $4, $5)::authentication_type) RETURNING *",
     [data.username, data.email, data.authentication.password, data.authentication.salt, data.authentication.sessionToken]
